@@ -123,7 +123,8 @@ $errorColor: #f00;
 	margin-bottom: 1rem;
 
 	label {
-		font-weight: 400;
+        // use default bootstarp3 label style
+		// font-weight: 400;
 		& > :first-child {
 			display: inline-block;
 		}
