@@ -116,7 +116,9 @@ $errorColor: #f00;
 .form-group {
 	display: inline-block;
 	vertical-align: top;
-	width: 100%;
+
+    // disable for bootstrap3
+	// width: 100%;
 	// margin: 0.5rem 0.26rem;
 	margin-bottom: 1rem;
 

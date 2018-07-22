@@ -286,7 +286,8 @@ export default {
 	} // span.help
 
 	.field-wrap {
-		display: flex;
+        // disable for bootstrap3
+		// display: flex;
 
 		.buttons {
 			white-space: nowrap;
