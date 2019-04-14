@@ -9,9 +9,9 @@
 		</label>
 
 		<div class="field-wrap">
-			<component ref="child" :is="getFieldType(field)" :disabled="fieldDisabled(field)" :model="model" :schema="field" :formOptions="options" @model-updated="onModelUpdated" @validated="onFieldValidated"></component>
+			<component ref="child" :is="getFieldType(field)" :vfg="vfg" :disabled="fieldDisabled(field)" :model="model" :schema="field" :formOptions="options" @model-updated="onModelUpdated" @validated="onFieldValidated"></component>
 			<div v-if="buttonVisibility(field)" class="buttons">
-				<button v-for="(btn, index) in field.buttons" @click="buttonClickHandler(btn, field, $event)" :class="btn.classes" :key="index" v-text="btn.label"></button>
+				<button v-for="(btn, index) in field.buttons" @click="buttonClickHandler(btn, field, $event)" :class="btn.classes" :key="index" v-text="btn.label" :type="getButtonType(btn)"></button>
 			</div>
 		</div>
 
@@ -33,6 +33,10 @@ export default {
 	components: fieldComponents,
 	mixins: [formMixin],
 	props: {
+		vfg: {
+			type: Object,
+			required: true
+		},
 		model: Object,
 		options: {
 			type: Object
@@ -77,6 +81,10 @@ export default {
 		getFieldType(fieldSchema) {
 			return "field-" + fieldSchema.type;
 		},
+		// Get type of button, default to 'button'
+		getButtonType(btn) {
+			return objGet(btn, "type", "button");
+		},
 		// Child field executed validation
 		onFieldValidated(res, errors, field) {
 			this.$emit("validated", res, errors, field);
@@ -112,19 +120,18 @@ export default {
 </script>
 <style lang="scss">
 $errorColor: #f00;
-
+.form-group:not([class*=" col-"]) {
+	width: 100%;
+}
 .form-group {
 	display: inline-block;
 	vertical-align: top;
-
-    // disable for bootstrap3
 	// width: 100%;
 	// margin: 0.5rem 0.26rem;
 	margin-bottom: 1rem;
 
 	label {
-        // use default bootstarp3 label style
-		// font-weight: 400;
+		font-weight: 400;
 		& > :first-child {
 			display: inline-block;
 		}

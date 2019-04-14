@@ -15,9 +15,11 @@ A schema-based form generator component for Vue.js.
 
 ## Demo
 
-[JSFiddle simple example](https://jsfiddle.net/icebob/0mg1v81e/)
+[JSFiddle simple example](https://jsfiddle.net/zoul0813/d8excp36/)
 
-[![Screenshot](https://icebob.gitbooks.io/vueformgenerator/content/assets/vfg-example1.png)](https://jsfiddle.net/icebob/0mg1v81e/)
+[CodePen simple example](https://codepen.io/zoul0813/pen/OrNVNw)
+
+[![Screenshot](https://github.com/vue-generators/vue-form-generator-docs/raw/master/assets/vfg-example1.png)](https://jsfiddle.net/zoul0813/d8excp36/)
 
 ## Features
 
@@ -33,7 +35,7 @@ A schema-based form generator component for Vue.js.
 
 ## Documentation
 
-[Online documentation on Gitbook](https://icebob.gitbooks.io/vueformgenerator/content/)
+[Online documentation on Gitbook](https://vue-generators.gitbook.io/vue-generators/)
 
 ## Dependencies
 
@@ -43,7 +45,7 @@ While built-in fields don't need external dependencies, optional fields may need
 These dependencies fall into two camps: jQuery or Vanilla. You can find almost the same functionality in both flavors.
 In the end, it's your choice to depend on jQuery or not.
 
-You can find details about dependencies in the official [documentation](https://icebob.gitbooks.io/vueformgenerator/content/) under each specific component.
+You can find details about dependencies in the official [documentation](https://vue-generators.gitbook.io/vue-generators/) under each specific component.
 
 ## Installation
 
@@ -107,73 +109,83 @@ If you want the slim down version, here is the changes:
 </template>
 
 <script>
-import VueFormGenerator from "vue-form-generator";
+import Vue from 'vue'
+import VueFormGenerator from 'vue-form-generator'
+import 'vue-form-generator/dist/vfg.css'
 
-Vue.use(VueFormGenerator);
+Vue.use(VueFormGenerator)
 
 export default {
-  data: {
-
-    model: {
-      id: 1,
-      name: "John Doe",
-      password: "J0hnD03!x4",
-      skills: ["Javascript", "VueJS"],
-      email: "john.doe@gmail.com",
-      status: true
-    },
-
-    schema: {
-      fields: [{
-        type: "input",
-        inputType: "text",
-        label: "ID (disabled text field)",
-        model: "id",
-        readonly: true,
-        disabled: true
-      },{
-        type: "input",
-        inputType: "text",
-        label: "Name",
-        model: "name",
-        placeholder: "Your name",
-        featured: true,
-        required: true
-      },{
-        type: "input",
-        inputType: "password",
-        label: "Password",
-        model: "password",
-        min: 6,
-        required: true,
-        hint: "Minimum 6 characters",
-        validator: VueFormGenerator.validators.string
-      },{
-        type: "select",
-        label: "Skills",
-        model: "skills",
-        values: ["Javascript", "VueJS", "CSS3", "HTML5"]
-      },{
-        type: "input",
-        inputType: "email",
-        label: "E-mail",
-        model: "email",
-        placeholder: "User's e-mail address"
-      },{
-        type: "checkbox",
-        label: "Status",
-        model: "status",
-        default: true
-      }]
-    },
-
-    formOptions: {
-      validateAfterLoad: true,
-      validateAfterChanged: true
+  data () {
+    return {
+      model: {
+        id: 1,
+        name: 'John Doe',
+        password: 'J0hnD03!x4',
+        skills: ['Javascript', 'VueJS'],
+        email: 'john.doe@gmail.com',
+        status: true
+      },
+      schema: {
+        fields: [
+          {
+            type: 'input',
+            inputType: 'text',
+            label: 'ID (disabled text field)',
+            model: 'id',
+            readonly: true,
+            disabled: true
+          },
+          {
+            type: 'input',
+            inputType: 'text',
+            label: 'Name',
+            model: 'name',
+            placeholder: 'Your name',
+            featured: true,
+            required: true
+          },
+          {
+            type: 'input',
+            inputType: 'password',
+            label: 'Password',
+            model: 'password',
+            min: 6,
+            required: true,
+            hint: 'Minimum 6 characters',
+            validator: VueFormGenerator.validators.string
+          },
+          {
+            type: 'select',
+            label: 'Skills',
+            model: 'skills',
+            values: ['Javascript', 'VueJS', 'CSS3', 'HTML5']
+          },
+          {
+            type: 'input',
+            inputType: 'email',
+            label: 'E-mail',
+            model: 'email',
+            placeholder: 'User\'s e-mail address'
+          },
+          {
+            type: 'checkbox',
+            label: 'Status',
+            model: 'status',
+            default: true
+          }
+        ]
+      },
+      formOptions: {
+        validateAfterLoad: true,
+        validateAfterChanged: true,
+        validateAsync: true
+      }
     }
   }
 }
 </script>
+
 ```
 
 Usage in local components
@@ -233,6 +245,7 @@ This way, it will be easier for everyone to find it. Thank you !
 * [vfg-field-sourcecode](https://github.com/gwenaelp/vfg-field-sourcecode) - A source code field for vue-form-generator
 * [vfg-field-array](https://github.com/gwenaelp/vfg-field-array) - A vue-form-generator field to handle arrays of items of any type.
 * [vfg-field-object](https://github.com/gwenaelp/vfg-field-object) - A vue-form-generator field to handle objects, with or without schemas.
+* [vfg-field-matrix](https://github.com/shwld/vfg-field-matrix) - A matrix field for vue-form-generator.
 
 ## Contribution
 

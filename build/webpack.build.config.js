@@ -11,6 +11,7 @@ const banner =
 	" * Released under the MIT License.\n" +
 	" */\n";
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 const StatsPlugin = require("stats-webpack-plugin");
 const vueLoaderConfig = require("./vue-loader.conf");
 
@@ -71,6 +72,10 @@ module.exports = [
 				"process.env": {
 					NODE_ENV: JSON.stringify("production")
 				}
+			}),
+			new LodashModuleReplacementPlugin({
+				collections: true,
+				paths: true,
 			}),
 			new webpack.optimize.UglifyJsPlugin({
 				compress: {

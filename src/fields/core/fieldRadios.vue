@@ -1,13 +1,13 @@
 <template lang="pug">
 	.radio-list(:disabled="disabled", v-attributes="'wrapper'")
-		label(v-for="item in items", :class="{'is-checked': isItemChecked(item)}", v-attributes="'label'")
-			input(:id="getFieldID(schema)", type="radio", :disabled="disabled", :name="id", @click="onSelection(item)", :value="getItemValue(item)", :checked="isItemChecked(item)", :class="schema.fieldClasses", v-attributes="'input'")
+		label(v-for="item in items", :class="getItemCssClasses(item)", v-attributes="'label'")
+			input(:id="getFieldID(schema, true)", type="radio", :disabled="isItemDisabled(item)", :name="id", @click="onSelection(item)", :value="getItemValue(item)", :checked="isItemChecked(item)", :class="schema.fieldClasses", :required="schema.required", v-attributes="'input'")
 			| {{ getItemName(item) }}
 
 </template>
 
 <script>
-import { isObject } from "lodash";
+import { isObject, isFunction, get as objGet } from "lodash";
 import abstractField from "../abstractField";
 
 export default {
@@ -58,12 +58,28 @@ export default {
 				return item;
 			}
 		},
+		getItemCssClasses(item) {
+			return {
+				"is-checked": this.isItemChecked(item),
+				"is-disabled": this.isItemDisabled(item)
+			};
+		},
 		onSelection(item) {
 			this.value = this.getItemValue(item);
 		},
 		isItemChecked(item) {
 			let currentValue = this.getItemValue(item);
 			return currentValue === this.value;
+		},
+		isItemDisabled(item) {
+			if (this.disabled) {
+				return true;
+			}
+			let disabled = objGet(item, "disabled", false);
+			if (isFunction(disabled)) {
+				return disabled(this.model);
+			}
+			return disabled;
 		}
 	}
 };

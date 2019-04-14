@@ -1,5 +1,75 @@
+## <small>2.3.4 (2019-02-07)</small>
+
+* #469 - fixes example in README, tested with a fresh vue-cli project ([b0037c9](https://github.com/vue-generators/vue-form-generator/commit/b0037c9))
+* #551 - added "is-disabled" class to the radios label ([1e9db8e](https://github.com/vue-generators/vue-form-generator/commit/1e9db8e)), closes [#551](https://github.com/vue-generators/vue-form-generator/issues/551)
+* Add vfg-field-matrix into the readme ([a898201](https://github.com/vue-generators/vue-form-generator/commit/a898201))
+* added optional field property `debounceValidateTime` which works at the field level, allowing indivi ([d98fa50](https://github.com/vue-generators/vue-form-generator/commit/d98fa50))
+* Ref #563 - return unique validation errors (prevents multiple validators from returning "this field  ([f9c699b](https://github.com/vue-generators/vue-form-generator/commit/f9c699b)), closes [#563](https://github.com/vue-generators/vue-form-generator/issues/563)
+* single-quotes fix ([5756317](https://github.com/vue-generators/vue-form-generator/commit/5756317))
+* Update validators.js ([a282933](https://github.com/vue-generators/vue-form-generator/commit/a282933))
+* updated abstractField test, seems the `field.formOptions` wasn't being updated, the `this.$parent.op ([8c1f462](https://github.com/vue-generators/vue-form-generator/commit/8c1f462))
+* updated package-lock with latest deps ([f7d7c71](https://github.com/vue-generators/vue-form-generator/commit/f7d7c71))
+
+
+
+## <small>2.3.3 (2018-12-14)</small>
+
+* #535, #526 - reversed "deep property path" fix ([da32bde](https://github.com/vue-generators/vue-form-generator/commit/da32bde)), closes [#535](https://github.com/vue-generators/vue-form-generator/issues/535) [#526](https://github.com/vue-generators/vue-form-generator/issues/526)
+* added "item.disabled" logic, supporting both boolean values and a function that is passed a referenc ([b227eb4](https://github.com/vue-generators/vue-form-generator/commit/b227eb4))
+* added "options" to VFG install function, appending custom "validators" to the validators object that ([892469e](https://github.com/vue-generators/vue-form-generator/commit/892469e))
+* added "type" attribute to inside buttons schema, defaults to "button" when one is not provided ([3306893](https://github.com/vue-generators/vue-form-generator/commit/3306893))
+* added an optional "unique" flag to "getFieldID" that appends lodash "uniqueId" to the ID when true.  ([ab1daeb](https://github.com/vue-generators/vue-form-generator/commit/ab1daeb)), closes [#468](https://github.com/vue-generators/vue-form-generator/issues/468)
+* added newline ([5813f0a](https://github.com/vue-generators/vue-form-generator/commit/5813f0a))
+* Codacy (guard-for-in) fix ([4e81d2d](https://github.com/vue-generators/vue-form-generator/commit/4e81d2d))
+* code fix ([b3a1010](https://github.com/vue-generators/vue-form-generator/commit/b3a1010))
+* Fix required number input does not require a value ([f95b38c](https://github.com/vue-generators/vue-form-generator/commit/f95b38c))
+* fixed code structure ([3b750b3](https://github.com/vue-generators/vue-form-generator/commit/3b750b3))
+* fixed single-quotes ([dfee175](https://github.com/vue-generators/vue-form-generator/commit/dfee175))
+* fixes #480 - dates are always passed to "date" and "datetime-local" elements using the standard form ([db3413f](https://github.com/vue-generators/vue-form-generator/commit/db3413f)), closes [#480](https://github.com/vue-generators/vue-form-generator/issues/480)
+* fixes an issue with fieldPikaday modifying the field schema and attaching `this.$el` to it, the pika ([2024204](https://github.com/vue-generators/vue-form-generator/commit/2024204))
+* listen for model-updated from `fields`, and fix `debounceFormatFunction` property to match fieldInpu ([7ad1fca](https://github.com/vue-generators/vue-form-generator/commit/7ad1fca))
+* migrated VFG docs to newer GitBooks, created GitHub Repo for Docs to allow for easier maintenance, u ([d372f5b](https://github.com/vue-generators/vue-form-generator/commit/d372f5b))
+* feat: add maxElements slot to fieldVueMultiSelect ([2e91a2f](https://github.com/vue-generators/vue-form-generator/commit/2e91a2f))
+
+
+
+## <small>2.3.2 (2018-10-22)</small>
+
+* Export dist ([9912b5e](https://github.com/vue-generators/vue-form-generator/commit/9912b5e))
+* Fix deep property path not working ([fb02f26](https://github.com/vue-generators/vue-form-generator/commit/fb02f26))
+* Fix fieldSubmit not calling validate method ([c82c44b](https://github.com/vue-generators/vue-form-generator/commit/c82c44b))
+* Fix Rawgit shut down ([34e08a6](https://github.com/vue-generators/vue-form-generator/commit/34e08a6))
+* docs: replace duplicated 2.3.0 with 2.3.1 ([69bbfce](https://github.com/vue-generators/vue-form-generator/commit/69bbfce))
+* feat(fields): add required attribute to checkbox component ([2b3c7e5](https://github.com/vue-generators/vue-form-generator/commit/2b3c7e5))
+* feat(fields): add required attribute to radios component ([8d04252](https://github.com/vue-generators/vue-form-generator/commit/8d04252))
+
+
+
+<a name="2.3.1"></a>
+## 2.3.1 (2018-10-03)
+
+* Use lodash-webpack-plugin for even better size
+* Added required attribute to textarea
+
+
+<a name="2.3.0"></a>
+## 2.3.0 (2018-09-19)
+
+* Fixed issue with SCSS variables being referenced incorrectly (#449)
+* Updated README to include new third-party VFG Fields
+* Rework of formGenerator use a component
+* Allow HTML for Field Label and Hints
+* Updated package.json URL's for VFG
+* Added a "noResult" slot to FieldVueMultiSelect
+* Include a reference to the VFG instance that triggered a "validated" event (3rd param)
+* Fixed a number parsing bug in IE/Edge with FieldInput
+* Added support for Bootstrap CSS Classes (`form-group` will not set width on `col-*` elements)
+
+
+
 <a name="2.2.2"></a>
 ## 2.2.2 (2018-04-24)
+
 * Fix NaN with value 0 on input type number/range.
 * Fix bug in fieldUpload that threw error due to $event not being defined
 * Added $event to onValidationError in fieldSubmit
