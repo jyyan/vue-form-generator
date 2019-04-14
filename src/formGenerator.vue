@@ -1,6 +1,6 @@
 <template lang="pug">
 div.vue-form-generator(v-if='schema != null')
-	fieldset(v-if="schema.fields", :is='tag')
+	fieldset(v-if="schema.fields", :is='tag', :class='tagClass')
 		template(v-for='field in fields')
 			form-group(v-if='fieldVisible(field)', :vfg="vfg", :field="field", :errors="errors", :model="model", :options="options", @validated="onFieldValidated", @model-updated="onModelUpdated")
 
@@ -47,6 +47,13 @@ export default {
 		isNewModel: {
 			type: Boolean,
 			default: false
+		},
+
+		tagClass: {
+			type: Object,
+			default: () => {
+				return {};
+			}
 		},
 
 		tag: {
