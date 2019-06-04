@@ -294,6 +294,45 @@ export default {
 			]
 		},
 		{
+			type: "radiosboots",
+			label: "RADIOS BOOTSTRAP",
+			model: "radios",
+			values: [
+				{
+					name: "HTML5",
+					value: "HTML5-123"
+				},
+				{
+					name: "Javascript",
+					value: "Javascript-123"
+				},
+				{
+					name: "CSS3",
+					value: "CSS3-123"
+				},
+				{
+					name: "CoffeeScript",
+					value: "CoffeeScript-123"
+				},
+				{
+					name: "AngularJS",
+					value: "AngularJS-123"
+				},
+				{
+					name: "ReactJS",
+					value: "ReactJS-123"
+				},
+				{
+					name: "VueJS",
+					value: "VueJS-123"
+				}
+			],
+			radiosOptions: {
+				value: "value",
+				name: "name"
+			}
+		},
+		{
 			type: "radios",
 			label: "RADIOS",
 			model: "radios",
