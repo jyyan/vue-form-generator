@@ -26,6 +26,23 @@ export default {
 
 			return baseClasses;
 		},
+		getFieldWrapClasses(field) {
+			const hasErrors = this.fieldErrors(field).length > 0;
+			let baseClasses = {
+			};
+
+			if (isArray(field.fieldWarpClasses)) {
+				forEach(field.fieldWarpClasses, c => (baseClasses[c] = true));
+			} else if (isString(field.fieldWarpClasses)) {
+				baseClasses[field.fieldWarpClasses] = true;
+			}
+
+			if (!isNil(field.type)) {
+				baseClasses["field-" + field.type] = true;
+			}
+
+			return baseClasses;
+		},
 		fieldErrors(field) {
 			let res = this.errors.filter(e => e.field === field);
 			return res.map(item => item.error);
