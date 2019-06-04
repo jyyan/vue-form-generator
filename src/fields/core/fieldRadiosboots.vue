@@ -1,8 +1,8 @@
 <template lang="pug">
 	.radio-list(:disabled="disabled", v-attributes="'wrapper'")
 		div(v-for="item in items" class="form-check")
-			input(:id="getFieldID(schema, true)", type="radio", :disabled="isItemDisabled(item)", :name="id", @click="onSelection(item)", :value="getItemValue(item)", :checked="isItemChecked(item)", class="form-check-input", :class="schema.fieldClasses", :required="schema.required", v-attributes="'input'")
 			label(:class="getItemCssClasses(item)", v-attributes="'label'")
+				input(:id="getFieldID(schema, true)", type="radio", :disabled="isItemDisabled(item)", :name="id", @click="onSelection(item)", :value="getItemValue(item)", :checked="isItemChecked(item)", class="form-check-input", :class="schema.fieldClasses", :required="schema.required", v-attributes="'input'")
 				| {{ getItemName(item) }}
 
 </template>

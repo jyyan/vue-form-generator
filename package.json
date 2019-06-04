@@ -11,7 +11,7 @@
     "build": "cross-env NODE_ENV=production npm run build:core && cross-env NODE_ENV=production npm run build:full",
     "dev-OLD": "webpack-dev-server --config webpack.dev.config.js --inline --hot --content-base dev/",
     "dev": "webpack-dev-server --config build/webpack.dev.config.js --inline --hot",
-    "lint": "eslint --ext=.js,.vue src test/unit/specs",
+    "lint": "eslint --fix --ext=.js,.vue src test/unit/specs",
     "coverall": "cat ./test/unit/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "coverage-OLD": "npm run test && npm run coverall",
     "coverage": "cross-env NODE_ENV=test nyc npm run mocha && nyc report --reporter=text-lcov | coveralls",
