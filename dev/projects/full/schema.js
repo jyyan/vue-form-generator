@@ -168,6 +168,14 @@ export default {
 		},
 		{
 			type: "input",
+			inputType: "checkbox",
+			inputFirst: true,
+			label: "Checkbox (input first/ label last)",
+			model: "checkbox",
+			styleClasses: "half-width"
+		},
+		{
+			type: "input",
 			inputType: "search",
 			label: "Search USELESS",
 			model: "search",
