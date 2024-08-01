@@ -27,7 +27,7 @@ export default {
 			return baseClasses;
 		},
 		getFieldWrapClasses(field) {
-			const hasErrors = this.fieldErrors(field).length > 0;
+			// const hasErrors = this.fieldErrors(field).length > 0;
 			let baseClasses = {
 			};
 
