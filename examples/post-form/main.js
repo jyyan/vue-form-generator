@@ -1,11 +1,7 @@
 var VueFormGenerator = window.VueFormGenerator;
+var { createApp } = Vue;
 
-var vm = new Vue({
-	el: "#app",
-	components: {
-		"vue-form-generator": VueFormGenerator.component
-	},
-
+var app = createApp({
 	methods: {
 		prettyJSON: function (json) {
 			if (json) {
@@ -136,3 +132,6 @@ var vm = new Vue({
 		}
 	}
 });
+
+app.component("vue-form-generator", VueFormGenerator.component);
+app.mount("#app");
