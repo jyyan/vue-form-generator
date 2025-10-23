@@ -1,9 +1,10 @@
 {
   "name": "vue-form-generator",
   "version": "2.3.4",
-  "description": "A schema-based form generator component for Vue.js",
+  "description": "A schema-based form generator component for Vue.js 3 (Options API)",
   "homepage": "https://github.com/vue-generators/vue-form-generator/",
   "main": "dist/vfg.js",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "prebuild": "echo 'Skipping tests for now'",
     "build:core": "cross-env NODE_ENV=production FULL_BUNDLE=false webpack --progress --config build/webpack.build.config.js --output-filename=vfg-core.js",
@@ -30,11 +31,13 @@
   },
   "keywords": [
     "vue",
+    "vue3",
     "vuejs",
     "form",
     "generator",
     "schema",
-    "json"
+    "json",
+    "options-api"
   ],
   "repository": {
     "type": "git",
