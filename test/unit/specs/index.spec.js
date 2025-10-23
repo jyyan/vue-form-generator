@@ -1,7 +1,7 @@
 import VueFormGenerator from "src/index";
 
 describe("module", () => {
-	it("module properties", () => {
+	it("module properties", async () => {
 		expect(VueFormGenerator).to.be.exist;
 		expect(VueFormGenerator).to.have.property("component");
 		expect(VueFormGenerator).to.have.property("schema");

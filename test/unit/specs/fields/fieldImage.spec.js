@@ -1,14 +1,15 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import FieldImage from "src/fields/optional/fieldImage.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldImage, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -32,12 +33,12 @@ describe("fieldImage.vue", () => {
 		let model = { avatar: "https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg" };
 		let input, fileInput;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("input[type=text]");
 		});
 
-		it("should contain an input text element", () => {
+		it("should contain an input text element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.exists()).to.be.true;
 			expect(input.attributes().type).to.be.equal("text");
@@ -45,7 +46,7 @@ describe("fieldImage.vue", () => {
 			expect(input.classes()).to.include("link");
 		});
 
-		it("should contain a file input element", () => {
+		it("should contain a file input element", async () => {
 			fileInput = wrapper.find("input[type=file]");
 
 			expect(fileInput.exists()).to.be.true;
@@ -53,13 +54,13 @@ describe("fieldImage.vue", () => {
 			expect(fileInput.classes()).to.include("file");
 		});
 
-		it("should not visible the preview div", () => {
+		it("should not visible the preview div", async () => {
 			let preview = wrapper.find(".preview");
 
 			expect(preview.element.style.display).to.be.equal("block");
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(input.element.value).to.be.equal(model.avatar);
 		});
 
@@ -83,71 +84,71 @@ describe("fieldImage.vue", () => {
 			});
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.avatar = "https://s3.amazonaws.com/uifaces/faces/twitter/felipebsb/128.jpg";
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("https://s3.amazonaws.com/uifaces/faces/twitter/felipebsb/128.jpg");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.value = "https://s3.amazonaws.com/uifaces/faces/twitter/peterme/128.jpg";
 			input.trigger("input");
-			wrapper.update();
+			await nextTick();
 
 			expect(model.avatar).to.be.equal("https://s3.amazonaws.com/uifaces/faces/twitter/peterme/128.jpg");
 		});
 
-		it("should not contain a file input element if browse is false", () => {
+		it("should not contain a file input element if browse is false", async () => {
 			wrapper.vm.schema.browse = false;
-			wrapper.update();
+			await nextTick();
 
 			let fileInput = wrapper.find("input[type=file]");
 
 			expect(fileInput.exists()).to.be.false;
 		});
 
-		it("should not visible the preview div", () => {
+		it("should not visible the preview div", async () => {
 			wrapper.vm.schema.preview = false;
-			wrapper.update();
+			await nextTick();
 
 			let preview = wrapper.find(".preview");
 
 			expect(preview.element.style.display).to.be.equal("none");
 		});
 
-		it("should not show the link input element if hideInput is true", () => {
+		it("should not show the link input element if hideInput is true", async () => {
 			wrapper.vm.schema.hideInput = true;
-			wrapper.update();
+			await nextTick();
 			let fileInput = wrapper.find("input[type=text]");
 
 			expect(fileInput.element.style.display).to.be.equal("none");
 
 			wrapper.vm.schema.hideInput = false;
-			wrapper.update();
+			await nextTick();
 		});
 
-		it("should not show base64 data in input field", () => {
+		it("should not show base64 data in input field", async () => {
 			model.avatar = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ";
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("<inline base64 image>");
 		});
 
-		it("should clear input if press remove icon", () => {
+		it("should clear input if press remove icon", async () => {
 			wrapper.vm.schema.preview = true;
-			wrapper.update();
+			await nextTick();
 			let remove = wrapper.find(".remove");
 
 			expect(input.element.value).to.be.not.equal("");
 
 			remove.trigger("click");
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("");
 		});
 
-		it.skip("should convert image to base64 if file input changed", () => {
+		it.skip("should convert image to base64 if file input changed", async () => {
 			console.log(new FileReader());
 
 			// Stub the browser FileReader
@@ -172,7 +173,7 @@ describe("fieldImage.vue", () => {
 					]
 				}
 			});
-			// wrapper.update();
+			// await nextTick();
 			expect(input.element.value).to.be.equal("base64 image data");
 			expect(model.avatar).to.be.equal("base64 image data");
 

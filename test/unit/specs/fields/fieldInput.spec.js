@@ -1,14 +1,13 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import fieldInput from "src/fields/core/fieldInput.vue";
 
-const localVue = createLocalVue();
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(fieldInput, {
-		localVue,
-		propsData: data,
+		props: data,
 		methods: methods
 	});
 
@@ -34,19 +33,19 @@ describe("fieldInput.vue", () => {
 		let model = { name: "John Doe" };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("input");
 		});
 
-		it("should contain an input text element", () => {
+		it("should contain an input text element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("input")).to.be.true;
 			expect(input.attributes().type).to.be.equal("text");
 			expect(input.classes()).to.include("form-control");
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(input.element.value).to.be.equal("John Doe");
 		});
 
@@ -79,9 +78,9 @@ describe("fieldInput.vue", () => {
 		]);
 		for (let [inputType, attributes] of inputTypes) {
 			describe("change type of input", () => {
-				it("should become a " + inputType, () => {
+				it("should become a " + inputType, async () => {
 					schema.inputType = inputType;
-					wrapper.update();
+					await nextTick();
 
 					expect(input.attributes().type).to.be.equal(inputType);
 				});
@@ -96,22 +95,22 @@ describe("fieldInput.vue", () => {
 			});
 		}
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.name = "Jane Doe";
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("Jane Doe");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.value = "John Smith";
 			input.trigger("input");
-			wrapper.update();
+			await nextTick();
 
 			expect(model.name).to.be.equal("John Smith");
 		});
 
-		it("should have 2 classes", () => {
+		it("should have 2 classes", async () => {
 			expect(input.classes()).to.include("applied-class");
 			expect(input.classes()).to.include("another-class");
 		});
@@ -138,17 +137,17 @@ describe("fieldInput.vue", () => {
 			let model = {};
 			let input, wrap;
 
-			before(() => {
+			before(async () => {
 				createField2({ schema, model });
 				input = wrapper.find("input");
 				wrap = wrapper.find(".wrapper");
 			});
 
-			it("wrapper should have data-toggle attribute", () => {
+			it("wrapper should have data-toggle attribute", async () => {
 				expect(wrap.attributes()["data-toggle"]).to.be.equal("collapse");
 			});
 
-			it("input should have data-toggle attribute", () => {
+			it("input should have data-toggle attribute", async () => {
 				expect(input.attributes()["data-toggle"]).to.be.equal("tooltip");
 			});
 		});
@@ -168,12 +167,12 @@ describe("fieldInput.vue", () => {
 			let model = {};
 			let input;
 
-			before(() => {
+			before(async () => {
 				createField2({ schema, model });
 				input = wrapper.find("input");
 			});
 
-			it("input should have data-toggle attribute", () => {
+			it("input should have data-toggle attribute", async () => {
 				expect(input.attributes()["data-toggle"]).to.be.equal("tooltip");
 			});
 		});

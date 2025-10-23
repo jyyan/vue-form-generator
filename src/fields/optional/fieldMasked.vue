@@ -23,7 +23,7 @@ export default {
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (window.$ && window.$.fn.mask) $(this.$el).unmask();
 	}
 };

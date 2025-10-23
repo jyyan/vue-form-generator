@@ -21,6 +21,30 @@ export default {
 		}
 	},
 
+	watch: {
+		model: function() {
+			if ($.fn.selectpicker) $(this.$el).selectpicker("refresh");
+		}
+	},
+
+	mounted() {
+		this.$nextTick(function() {
+			if ($.fn.selectpicker) {
+				$(this.$el)
+					.selectpicker("destroy")
+					.selectpicker(this.schema.selectOptions);
+			} else {
+				console.warn(
+					"Bootstrap-select library is missing. Please download from https://silviomoreto.github.io/bootstrap-select/ and load the script and CSS in the HTML head section!"
+				);
+			}
+		});
+	},
+
+	beforeUnmount() {
+		if ($.fn.selectpicker) $(this.$el).selectpicker("destroy");
+	},
+
 	methods: {
 		getItemValue(item) {
 			if (isObject(item)) {
@@ -54,30 +78,6 @@ export default {
 				return item;
 			}
 		}
-	},
-
-	watch: {
-		model: function() {
-			if ($.fn.selectpicker) $(this.$el).selectpicker("refresh");
-		}
-	},
-
-	mounted() {
-		this.$nextTick(function() {
-			if ($.fn.selectpicker) {
-				$(this.$el)
-					.selectpicker("destroy")
-					.selectpicker(this.schema.selectOptions);
-			} else {
-				console.warn(
-					"Bootstrap-select library is missing. Please download from https://silviomoreto.github.io/bootstrap-select/ and load the script and CSS in the HTML head section!"
-				);
-			}
-		});
-	},
-
-	beforeDestroy() {
-		if ($.fn.selectpicker) $(this.$el).selectpicker("destroy");
 	}
 };
 </script>

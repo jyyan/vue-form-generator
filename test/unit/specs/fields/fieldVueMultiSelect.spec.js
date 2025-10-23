@@ -1,17 +1,18 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import Vue from "vue";
 import fieldVueMultiSelect from "src/fields/optional/fieldVueMultiSelect.vue";
 import VueMultiSelect from "vue-multiselect";
 
-const localVue = createLocalVue();
+
 let wrapper;
 let input;
 
 function createField2(data, methods) {
 	const _wrapper = mount(fieldVueMultiSelect, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods,
 		components: {
 			multiselect: VueMultiSelect
@@ -38,18 +39,18 @@ describe("fieldVueMultiSelect.vue", () => {
 		};
 		let model = { city: "Paris" };
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 		});
 
-		it("should contain a select element", () => {
+		it("should contain a select element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.exists()).to.be.true;
 			expect(input.classes()).to.not.include("form-control");
 			expect(input.classes()).to.not.include("multiselect--disabled");
 		});
 
-		it("should contain option elements", () => {
+		it("should contain option elements", async () => {
 			let options = input.findAll("li.multiselect__element .multiselect__option");
 			expect(options.length).to.be.equal(schema.values.length);
 			expect(
@@ -61,19 +62,19 @@ describe("fieldVueMultiSelect.vue", () => {
 			expect(options.at(1).classes()).to.include("multiselect__option--selected");
 		});
 
-		it("should set disabled", () => {
+		it("should set disabled", async () => {
 			wrapper.vm.disabled = true;
-			wrapper.update();
+			await nextTick();
 
 			expect(input.classes()).to.include("multiselect--disabled");
 
 			wrapper.vm.disabled = false;
-			wrapper.update();
+			await nextTick();
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.city = ["Rome"];
-			wrapper.update();
+			await nextTick();
 			let tags = input.findAll(".multiselect__tag");
 
 			expect(tags.length).to.be.equal(1);
@@ -85,9 +86,9 @@ describe("fieldVueMultiSelect.vue", () => {
 			).to.be.equal("Rome");
 		});
 
-		it("input value should be the model value after changed (multiselection)", () => {
+		it("input value should be the model value after changed (multiselection)", async () => {
 			model.city = ["Paris", "Rome"];
-			wrapper.update();
+			await nextTick();
 			let tags = input.findAll(".multiselect__tag");
 
 			expect(tags.length).to.be.equal(2);
@@ -105,10 +106,10 @@ describe("fieldVueMultiSelect.vue", () => {
 			).to.be.equal("Rome");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			let options = input.findAll("li .multiselect__option");
 			options.at(2).trigger("click");
-			wrapper.update();
+			await nextTick();
 
 			expect(model.city.length).to.be.equal(1);
 			expect(model.city[0]).to.be.equal("Paris");
@@ -139,13 +140,13 @@ describe("fieldVueMultiSelect.vue", () => {
 			];
 			schema.selectOptions = {};
 
-			before(() => {
+			before(async () => {
 				createField2({ schema, model, disabled: false });
 			});
 
-			it("model value should work with objects", () => {
+			it("model value should work with objects", async () => {
 				schema.selectOptions = { label: "name", trackBy: "name" };
-				wrapper.update();
+				await nextTick();
 
 				expect(model.city.length).to.be.equal(1);
 				expect(model.city[0]).to.be.deep.equal(schema.values[0]);

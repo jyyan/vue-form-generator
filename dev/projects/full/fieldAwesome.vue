@@ -11,8 +11,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:color";
+
 input {
-	background-color: lighten(blue, 40%) !important;
+	background-color: color.adjust(blue, $lightness: 40%) !important;
 	font-weight: bold;
 }
 </style>

@@ -5,6 +5,9 @@ require("jsdom-global")();
 global.sinon = require("sinon");
 global.expect = require("chai").expect;
 
+// Add flushPromises helper for async tests
+global.flushPromises = () => new Promise((resolve) => setImmediate(resolve));
+
 const attributesList = {
 	autocomplete: { before: "on", after: "off", name: "autocomplete" },
 	disabled: { before: true, after: false, field: true, name: "disabled" },

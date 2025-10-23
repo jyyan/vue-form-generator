@@ -195,12 +195,12 @@ export default {
 						o = o[k];
 					} else {
 						// Create missing property (new level)
-						this.$root.$set(o, k, {});
+						o[k] = {};
 						o = o[k];
 					}
 				else {
 					// Set final property value
-					this.$root.$set(o, k, value);
+					o[k] = value;
 					return;
 				}
 

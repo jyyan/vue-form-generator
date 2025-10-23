@@ -63,6 +63,45 @@ export default {
 			return this.schema.inputType;
 		}
 	},
+
+	mounted() {
+		switch (this.schema.inputType.toLowerCase()) {
+			case "number":
+			case "range":
+				this.debouncedFormatFunc = debounce(
+					(newValue, oldValue) => {
+						this.formatNumberToModel(newValue, oldValue);
+					},
+					parseInt(objGet(this.schema, "debounceFormatTimeout", 1000)),
+					{
+						trailing: true,
+						leading: false
+					}
+				);
+				break;
+			case "date":
+			case "datetime":
+			case "datetime-local":
+				// wait 1s before calling 'formatDatetimeToModel' to allow user to input data
+				this.debouncedFormatFunc = debounce(
+					(newValue, oldValue) => {
+						this.formatDatetimeToModel(newValue, oldValue);
+					},
+					parseInt(objGet(this.schema, "debounceFormatTimeout", 1000)),
+					{
+						trailing: true,
+						leading: false
+					}
+				);
+				break;
+		}
+	},
+
+	created() {
+		if (this.schema.inputType.toLowerCase() === "file") {
+			console.warn("The 'file' type in input field is deprecated. Use 'file' field instead.");
+		}
+	},
 	methods: {
 		formatValueToModel(value) {
 			if (value != null) {
@@ -139,45 +178,6 @@ export default {
 			if (isFunction(this.debouncedFormatFunc)) {
 				this.debouncedFormatFunc.flush();
 			}
-		}
-	},
-
-	mounted() {
-		switch (this.schema.inputType.toLowerCase()) {
-			case "number":
-			case "range":
-				this.debouncedFormatFunc = debounce(
-					(newValue, oldValue) => {
-						this.formatNumberToModel(newValue, oldValue);
-					},
-					parseInt(objGet(this.schema, "debounceFormatTimeout", 1000)),
-					{
-						trailing: true,
-						leading: false
-					}
-				);
-				break;
-			case "date":
-			case "datetime":
-			case "datetime-local":
-				// wait 1s before calling 'formatDatetimeToModel' to allow user to input data
-				this.debouncedFormatFunc = debounce(
-					(newValue, oldValue) => {
-						this.formatDatetimeToModel(newValue, oldValue);
-					},
-					parseInt(objGet(this.schema, "debounceFormatTimeout", 1000)),
-					{
-						trailing: true,
-						leading: false
-					}
-				);
-				break;
-		}
-	},
-
-	created() {
-		if (this.schema.inputType.toLowerCase() === "file") {
-			console.warn("The 'file' type in input field is deprecated. Use 'file' field instead.");
 		}
 	}
 };

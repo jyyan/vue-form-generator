@@ -46,7 +46,7 @@ export default {
 					})
 				);
 
-				if (this.cleave.properties && this.cleave.properties.hasOwnProperty("result")) {
+				if (this.cleave.properties && Object.prototype.hasOwnProperty.call(this.cleave.properties, "result")) {
 					this.$watch("cleave.properties.result", () => {
 						this.value = this.cleave.properties.result;
 					});
@@ -59,16 +59,16 @@ export default {
 		});
 	},
 
-	methods: {
-		inputChange() {
-			this.value = this.$el.value;
-		}
-	},
-
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.cleave) {
 			this.cleave.destroy();
 			this.$el.removeEventListener("input", this.inputChange);
+		}
+	},
+
+	methods: {
+		inputChange() {
+			this.value = this.$el.value;
 		}
 	}
 };

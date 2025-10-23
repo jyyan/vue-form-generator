@@ -17,13 +17,19 @@ import formMixin from "./formMixin.js";
 import formGroup from "./formGroup.vue";
 
 export default {
-	name: "formGenerator",
+	name: "FormGenerator",
 	components: { formGroup },
 	mixins: [formMixin],
 	props: {
-		schema: Object,
+		schema: {
+			type: Object,
+			default: null
+		},
 
-		model: Object,
+		model: {
+			type: Object,
+			default: null
+		},
 
 		options: {
 			type: Object,
@@ -64,6 +70,7 @@ export default {
 			}
 		}
 	},
+	emits: ["validated", "model-updated"],
 
 	data() {
 		return {

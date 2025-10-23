@@ -1,15 +1,16 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import FieldSelectEx from "src/fields/optional/fieldSelectEx.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 let input;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldSelectEx, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -33,16 +34,16 @@ describe("fieldSelectEx.vue", () => {
 		};
 		let model = { city: "Paris" };
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 		});
 
-		it("should contain a select element", () => {
+		it("should contain a select element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.exists()).to.be.true;
 		});
 
-		it("should contain option elements", () => {
+		it("should contain option elements", async () => {
 			let options = input.findAll("option");
 
 			expect(options.length).to.be.equal(4 + 1); // +1 for <non selected>
@@ -51,14 +52,14 @@ describe("fieldSelectEx.vue", () => {
 			expect(options.at(2).element.selected).to.be.true;
 		});
 
-		it("should contain a <non selected> element", () => {
+		it("should contain a <non selected> element", async () => {
 			let options = input.findAll("option");
 
 			expect(options.at(0).attributes().disabled).to.be.undefined;
 			// expect(options.at(0).text()).to.be.equal("<Not selected>");
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(input.element.value).to.be.equal("Paris");
 		});
 
@@ -72,24 +73,24 @@ describe("fieldSelectEx.vue", () => {
 			});
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.city = "Rome";
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("Rome");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.value = "London";
 			input.trigger("change");
 
 			expect(model.city).to.be.equal("London");
 		});
 
-		it.skip("should not be multiple", () => {
+		it.skip("should not be multiple", async () => {
 			model.city = []; // For multiselect need empty array
 			schema.multiSelect = true;
-			wrapper.update();
+			await nextTick();
 
 			expect(input.attributes().multiple).to.equal("multiple");
 			let options = input.findAll("option");
@@ -117,11 +118,11 @@ describe("fieldSelectEx.vue", () => {
 		};
 		let model = { city: [2] };
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 		});
 
-		it.skip("should contain option elements", () => {
+		it.skip("should contain option elements", async () => {
 			let options = input.findAll("option");
 
 			expect(options.length).to.be.equal(4 + 1); // +1 for <non selected>
@@ -131,18 +132,18 @@ describe("fieldSelectEx.vue", () => {
 			expect(options.at(1).element.selected).to.be.false;
 		});
 
-		it.skip("should contain the value", () => {
+		it.skip("should contain the value", async () => {
 			expect(input.element.value).to.be.equal("2");
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.city = 3;
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("3");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.value = "4";
 			input.trigger("change");
 
@@ -166,22 +167,22 @@ describe("fieldSelectEx.vue", () => {
 		};
 		let model = { city: [2] };
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
-			wrapper.update();
+			await nextTick();
 		});
 
-		it.skip("should contain the value", () => {
+		it.skip("should contain the value", async () => {
 			expect(input.element.value).to.be.equal("2");
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.city = 3;
-			wrapper.update();
+			await nextTick();
 			expect(input.element.value).to.be.equal("3");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.value = "4";
 			input.trigger("change");
 			expect(model.city).to.be.equal(4);

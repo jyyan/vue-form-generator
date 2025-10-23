@@ -1,9 +1,7 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import VueFormGenerator from "src/index";
-
-const localVue = createLocalVue();
-localVue.use(VueFormGenerator);
 
 let wrapper;
 const defaultTemplate = `<vue-form-generator :schema="schema" :model="model" :options="options" :multiple="multiple" ref="form"></vue-form-generator>`;
@@ -18,7 +16,9 @@ function createFormGenerator(data, methods, template) {
 	};
 
 	const _wrapper = mount(Component, {
-		localVue
+		global: {
+			plugins: [VueFormGenerator]
+		}
 	});
 	wrapper = _wrapper;
 	return _wrapper;
@@ -30,11 +30,11 @@ describe("VueFormGenerator.vue", () => {
 			fields: []
 		};
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema });
 		});
 
-		it("should be create fieldset", () => {
+		it("should be create fieldset", async () => {
 			const fieldset = wrapper.find("fieldset");
 			expect(fieldset.exists()).to.be.true;
 			expect(fieldset.is("fieldset")).to.be.true;
@@ -46,7 +46,7 @@ describe("VueFormGenerator.vue", () => {
 			fields: []
 		};
 
-		before(() => {
+		before(async () => {
 			createFormGenerator(
 				{ schema },
 				undefined,
@@ -54,7 +54,7 @@ describe("VueFormGenerator.vue", () => {
 			);
 		});
 
-		it("should be create custom tag", () => {
+		it("should be create custom tag", async () => {
 			const section = wrapper.find("section");
 			expect(section.exists()).to.be.true;
 			expect(section.is("section")).to.be.true;
@@ -78,7 +78,7 @@ describe("VueFormGenerator.vue", () => {
 			]
 		};
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			// Reset schema value
 			schema = {
 				fields: [
@@ -98,44 +98,44 @@ describe("VueFormGenerator.vue", () => {
 			group = wrapper.find(".form-group");
 		});
 
-		it("should be minimal classes", () => {
+		it("should be minimal classes", async () => {
 			expect(group.classes().length).to.be.equal(2);
 			expect(group.classes()).to.include("form-group");
 			expect(group.classes()).to.include("field-input");
 		});
 
-		it("should be featured class", () => {
+		it("should be featured class", async () => {
 			wrapper.vm.schema.fields[0].featured = true;
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.include("featured");
 		});
 
-		it("should be readonly class", () => {
+		it("should be readonly class", async () => {
 			wrapper.vm.schema.fields[0].readonly = true;
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.include("readonly");
 		});
 
-		it("should be disabled class", () => {
+		it("should be disabled class", async () => {
 			wrapper.vm.schema.fields[0].disabled = true;
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.include("disabled");
 		});
 
-		it("should be required class", () => {
+		it("should be required class", async () => {
 			wrapper.vm.schema.fields[0].required = true;
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.include("required");
 		});
 
-		it("should be error class", () => {
+		it("should be error class", async () => {
 			wrapper.vm.$refs.form.errors.push({ field: wrapper.vm.schema.fields[0], error: "Validation error!" });
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.include("error");
 		});
 
 		describe("custom validation classes", () => {
-			beforeEach(() => {
+			beforeEach(async () => {
 				let options = {
 					validationErrorClass: "has-error",
 					validationSuccessClass: "has-success"
@@ -144,28 +144,28 @@ describe("VueFormGenerator.vue", () => {
 				group = wrapper.find(".form-group");
 			});
 
-			it("error class", () => {
+			it("error class", async () => {
 				wrapper.vm.$refs.form.errors.push({ field: wrapper.vm.schema.fields[0], error: "Validation error!" });
-				wrapper.update();
+				await nextTick();
 				expect(group.classes()).to.include("has-error");
 			});
 
-			it("success class", () => {
+			it("success class", async () => {
 				wrapper.vm.$refs.form.errors = [];
-				wrapper.update();
+				await nextTick();
 				expect(group.classes()).to.include("has-success");
 			});
 		});
 
-		it("should be add a custom classes", () => {
+		it("should be add a custom classes", async () => {
 			wrapper.vm.schema.fields[0].styleClasses = "classA";
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.include("classA");
 		});
 
-		it("should be add more custom classes", () => {
+		it("should be add more custom classes", async () => {
 			wrapper.vm.schema.fields[0].styleClasses = ["classB", "classC"];
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.include("classB");
 			expect(group.classes()).to.include("classC");
 		});
@@ -185,12 +185,12 @@ describe("VueFormGenerator.vue", () => {
 		};
 		let label;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema });
 			label = wrapper.find("label");
 		});
 
-		it("should be 2 classes", () => {
+		it("should be 2 classes", async () => {
 			expect(label.classes()).to.include("applied-class");
 			expect(label.classes()).to.include("another-class");
 		});
@@ -210,20 +210,20 @@ describe("VueFormGenerator.vue", () => {
 			]
 		};
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema });
 			group = wrapper.find(".form-group");
 			label = group.find("label");
 		});
 
-		it("should be text of cell is the name of field", () => {
+		it("should be text of cell is the name of field", async () => {
 			expect(label.exists()).to.be.true;
 			expect(label.text()).to.be.equal("Name");
 		});
 
-		it("should be a question icon if has helpText", () => {
+		it("should be a question icon if has helpText", async () => {
 			wrapper.vm.schema.fields[0].help = "Sample help";
-			wrapper.update();
+			await nextTick();
 			let span = group.find(".help");
 			expect(span.exists()).to.be.true;
 			expect(span.find("i").exists()).to.be.true;
@@ -248,25 +248,25 @@ describe("VueFormGenerator.vue", () => {
 			]
 		};
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema });
 			group = wrapper.find(".form-group");
 		});
 
-		it("should be a .field-wrap div", () => {
+		it("should be a .field-wrap div", async () => {
 			expect(group.find(".field-wrap").exists()).to.be.true;
 		});
 
-		it("should be a hint div if hint is not null", () => {
+		it("should be a hint div if hint is not null", async () => {
 			let hint = group.find(".hint");
 			expect(hint.exists()).to.be.true;
 			expect(hint.text()).to.be.equal("Hint text");
 		});
 
-		it("should be .errors div if there are errors in fields", () => {
+		it("should be .errors div if there are errors in fields", async () => {
 			wrapper.vm.$refs.form.errors.push({ field: wrapper.vm.schema.fields[0], error: "Some error!" });
 			wrapper.vm.$refs.form.errors.push({ field: wrapper.vm.schema.fields[0], error: "Another error!" });
-			wrapper.update();
+			await nextTick();
 			let div = group.find(".errors");
 			expect(div.exists()).to.be.true;
 			let errors = div.findAll("span");
@@ -285,12 +285,12 @@ describe("VueFormGenerator.vue", () => {
 		};
 		let form;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, multiple: true });
 			form = wrapper.vm.$refs.form;
 		});
 
-		it("should render only phone field", () => {
+		it("should render only phone field", async () => {
 			expect(form.fields.length).to.be.equal(1);
 			expect(wrapper.find(".form-group label").text()).to.be.equal("phone");
 		});
@@ -318,18 +318,18 @@ describe("VueFormGenerator.vue", () => {
 
 		let input;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			input = wrapper.find("input");
 		});
 
-		it("should be enabled the name field", () => {
+		it("should be enabled the name field", async () => {
 			expect(input.attributes().disabled).to.be.undefined;
 		});
 
-		it("should be disabled the name field", () => {
+		it("should be disabled the name field", async () => {
 			wrapper.vm.model.status = false;
-			wrapper.update();
+			await nextTick();
 			expect(input.attributes().disabled).to.be.equal("disabled");
 		});
 	});
@@ -352,11 +352,11 @@ describe("VueFormGenerator.vue", () => {
 			status: true
 		};
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 		});
 
-		it("should be called with correct params", () => {
+		it("should be called with correct params", async () => {
 			let spy = wrapper.vm.schema.fields[0].disabled;
 			expect(spy.called).to.be.true;
 			expect(spy.calledWith(model, wrapper.vm.schema.fields[0], wrapper.vm.$children[0].$children[0])).to.be.true;
@@ -380,18 +380,18 @@ describe("VueFormGenerator.vue", () => {
 
 		let input;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			input = wrapper.find("input");
 		});
 
-		it("should be enabled the name field", () => {
+		it("should be enabled the name field", async () => {
 			expect(input.attributes().disabled).to.be.undefined;
 		});
 
-		it("should be disabled the name field", () => {
+		it("should be disabled the name field", async () => {
 			wrapper.vm.schema.fields[0].disabled = true;
-			wrapper.update();
+			await nextTick();
 			expect(input.attributes().disabled).to.be.equal("disabled");
 		});
 	});
@@ -418,18 +418,18 @@ describe("VueFormGenerator.vue", () => {
 
 		let group;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			group = wrapper.find(".form-group");
 		});
 
-		it("should be readonly", () => {
+		it("should be readonly", async () => {
 			expect(group.classes()).to.include("readonly");
 		});
 
-		it("should be writable", () => {
+		it("should be writable", async () => {
 			wrapper.vm.model.status = false;
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.not.include("readonly");
 		});
 	});
@@ -456,17 +456,17 @@ describe("VueFormGenerator.vue", () => {
 			note: "John Doe"
 		};
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 		});
 
-		it("should be applay", () => {
+		it("should be applay", async () => {
 			expect(wrapper.find(".form-group .hint").text()).to.be.equal("8 of max 500 characters used!");
 		});
 
-		it("should be changed", () => {
+		it("should be changed", async () => {
 			model.note = "Dr. John Doe";
-			wrapper.update();
+			await nextTick();
 			expect(wrapper.find(".form-group .hint").text()).to.be.equal("12 of max 500 characters used!");
 		});
 	});
@@ -493,18 +493,18 @@ describe("VueFormGenerator.vue", () => {
 
 		let group;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			group = wrapper.find(".form-group");
 		});
 
-		it("should be featured", () => {
+		it("should be featured", async () => {
 			expect(group.classes()).to.include("featured");
 		});
 
-		it("should not be featured", () => {
+		it("should not be featured", async () => {
 			wrapper.vm.model.status = false;
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.not.include("featured");
 		});
 	});
@@ -531,18 +531,18 @@ describe("VueFormGenerator.vue", () => {
 
 		let group;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			group = wrapper.find(".form-group");
 		});
 
-		it("should be required", () => {
+		it("should be required", async () => {
 			expect(group.classes()).to.include("required");
 		});
 
-		it("should be optional", () => {
+		it("should be optional", async () => {
 			wrapper.vm.model.status = false;
-			wrapper.update();
+			await nextTick();
 			expect(group.classes()).to.not.include("required");
 		});
 	});
@@ -567,18 +567,18 @@ describe("VueFormGenerator.vue", () => {
 			status: true
 		};
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 		});
 
-		it("should be visible the name field", () => {
+		it("should be visible the name field", async () => {
 			let input = wrapper.find("input[type=text]");
 			expect(input.exists()).to.be.true;
 		});
 
-		it("should be hidden the name field", () => {
+		it("should be hidden the name field", async () => {
 			wrapper.vm.model.status = false;
-			wrapper.update();
+			await nextTick();
 			let input = wrapper.find("input[type=text]");
 			expect(input.exists()).to.be.false;
 		});
@@ -599,18 +599,18 @@ describe("VueFormGenerator.vue", () => {
 
 		let model = { name: "John Doe" };
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 		});
 
-		it("should be enabled the name field", () => {
+		it("should be enabled the name field", async () => {
 			let input = wrapper.find("input[type=text]");
 			expect(input.exists()).to.be.true;
 		});
 
-		it("should be disabled the name field", () => {
+		it("should be disabled the name field", async () => {
 			wrapper.vm.schema.fields[0].visible = false;
-			wrapper.update();
+			await nextTick();
 			let input = wrapper.find("input[type=text]");
 			expect(input.exists()).to.be.false;
 		});
@@ -633,23 +633,23 @@ describe("VueFormGenerator.vue", () => {
 		let model = { name: "John Doe" };
 		let form;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			form = wrapper.vm.$refs.form;
 		});
 
-		it("should empty the errors", () => {
+		it("should empty the errors", async () => {
 			expect(form.validate()).to.be.true;
 			expect(form.errors).to.be.length(0);
 		});
 
-		it("should give a validation error", () => {
+		it("should give a validation error", async () => {
 			wrapper.vm.model.name = "Ab";
 			expect(form.validate()).to.be.false;
 			expect(form.errors).to.be.length(1);
 		});
 
-		it("should no validation error", () => {
+		it("should no validation error", async () => {
 			wrapper.vm.model.name = "Abc";
 			expect(form.validate()).to.be.true;
 			expect(form.errors).to.be.length(0);
@@ -673,23 +673,23 @@ describe("VueFormGenerator.vue", () => {
 		let model = { name: "John Doe" };
 		let form;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			form = wrapper.vm.$refs.form;
 		});
 
-		it("should empty the errors", () => {
+		it("should empty the errors", async () => {
 			expect(form.validate()).to.be.true;
 			expect(form.errors).to.be.length(0);
 		});
 
-		it("should give a validation error", () => {
+		it("should give a validation error", async () => {
 			wrapper.vm.model.name = "Ab";
 			expect(form.validate()).to.be.false;
 			expect(form.errors).to.be.length(1);
 		});
 
-		it("should no validation error", () => {
+		it("should no validation error", async () => {
 			wrapper.vm.model.name = "Abc";
 			expect(form.validate()).to.be.true;
 			expect(form.errors).to.be.length(0);
@@ -711,12 +711,12 @@ describe("VueFormGenerator.vue", () => {
 		let model = { name: "Me" };
 		let form;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			form = wrapper.vm.$refs.form;
 		});
 
-		it("should be validation error at ready()", () => {
+		it("should be validation error at ready()", async () => {
 			expect(form).to.not.be.undefined;
 			expect(form.options).to.not.be.undefined;
 		});
@@ -739,19 +739,19 @@ describe("VueFormGenerator.vue", () => {
 		let model = { name: "Me" };
 		let form;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model, options: { validateAfterLoad: true } });
-			wrapper.update();
+			await nextTick();
 		});
 
-		it("should be validation error at mounted()", () => {
+		it("should be validation error at mounted()", async () => {
 			form = wrapper.vm.$refs.form;
 			expect(form.errors).to.be.length(1);
 		});
 
-		it("should be validation error if model is changed", () => {
+		it("should be validation error if model is changed", async () => {
 			form.model = { name: "Al" };
-			wrapper.update();
+			await nextTick();
 			expect(form.errors).to.be.length(1);
 		});
 
@@ -791,7 +791,7 @@ describe("VueFormGenerator.vue", () => {
 		let form;
 		let onValidated = sinon.spy();
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createFormGenerator(
 				{ schema, model },
 				{ onValidated: onValidated },
@@ -800,11 +800,11 @@ describe("VueFormGenerator.vue", () => {
 			form = wrapper.vm.$refs.form;
 		});
 
-		it("should no errors after mounted()", () => {
+		it("should no errors after mounted()", async () => {
 			expect(form.errors).to.be.length(0);
 		});
 
-		it.skip("should be validation error if model value is not valid", () => {
+		it.skip("should be validation error if model value is not valid", async () => {
 			wrapper.vm.model.name = "A";
 			onValidated.resetHistory();
 			form.validate();
@@ -821,7 +821,7 @@ describe("VueFormGenerator.vue", () => {
 			).to.be.true;
 		});
 
-		it("should no validation error if model valie is valid", () => {
+		it("should no validation error if model valie is valid", async () => {
 			wrapper.vm.model.name = "Alan";
 			onValidated.resetHistory();
 			form.validate();
@@ -848,12 +848,12 @@ describe("VueFormGenerator.vue", () => {
 		let model = { name: "Me" };
 		let form;
 
-		before(() => {
+		before(async () => {
 			createFormGenerator({ schema, model });
 			form = wrapper.vm.$refs.form;
 		});
 
-		it("should NOT called the schema.onChanged", () => {
+		it("should NOT called the schema.onChanged", async () => {
 			schema.fields[0].onChanged.resetHistory();
 			form.model = { name: "Bob" };
 			expect(schema.fields[0].onChanged.called).to.be.false;
@@ -888,7 +888,7 @@ describe("VueFormGenerator.vue", () => {
 		let field;
 		let onValidated = sinon.spy();
 
-		before(() => {
+		before(async () => {
 			createFormGenerator(
 				{ schema, model },
 				{ onValidated: onValidated },
@@ -905,7 +905,7 @@ describe("VueFormGenerator.vue", () => {
 			});
 		});
 
-		it.skip("should be validation error if model value is not valid", () => {
+		it.skip("should be validation error if model value is not valid", async () => {
 			onValidated.resetHistory();
 			wrapper.vm.model.name = "A";
 			field.validate();
@@ -922,14 +922,14 @@ describe("VueFormGenerator.vue", () => {
 			).to.be.true;
 		});
 
-		it.skip("should be 2 validation error", () => {
+		it.skip("should be 2 validation error", async () => {
 			form.$children[1].validate();
 			expect(form.errors).to.be.length(2);
 			expect(form.errors[0].error).to.be.equal("The length of text is too small! Current: 1, Minimum: 3");
 			expect(form.errors[1].error).to.be.equal("Validation error!");
 		});
 
-		it.skip("should only other field validation error", () => {
+		it.skip("should only other field validation error", async () => {
 			wrapper.vm.model.name = "Alan";
 			onValidated.resetHistory();
 			field.validate();
@@ -968,7 +968,7 @@ describe("VueFormGenerator.vue", () => {
 		let field;
 		let onValidated = sinon.spy();
 
-		before(() => {
+		before(async () => {
 			createFormGenerator(
 				{ schema, model },
 				{ onValidated: onValidated },

@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import VueFormGenerator from "../../../src";
 import DataTable from "./dataTable.vue";
 import Fakerator from "fakerator";
@@ -41,16 +40,7 @@ import Schema from "./schema";
 import { users } from "./data";
 import mixinUtils from "../../mixins/utils.js";
 
-import Multiselect from "vue-multiselect";
-Vue.component("multiselect", Multiselect);
-
-// Test custom field
-import FieldAwesome from "./fieldAwesome.vue";
-Vue.component("fieldAwesome", FieldAwesome);
-
 import { each, cloneDeep, merge } from "lodash";
-
-Vue.use(VueFormGenerator);
 
 let fakerator = new Fakerator();
 
@@ -225,10 +215,8 @@ export default {
 		});
 	}
 };
-
-window.Vue = require("vue").default;
 </script>
 
 <style lang="scss">
-@import "../../style.scss";
+@use "../../style.scss";
 </style>

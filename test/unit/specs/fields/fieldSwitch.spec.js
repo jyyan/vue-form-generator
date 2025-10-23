@@ -1,14 +1,15 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import FieldSwitch from "src/fields/optional/fieldSwitch.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldSwitch, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -30,18 +31,18 @@ describe("FieldSwitch.vue", () => {
 		let model = { status: true };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("input");
 		});
 
-		it("should contain a checkbox element", () => {
+		it("should contain a checkbox element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("input")).to.be.true;
 			expect(input.attributes().type).to.be.equal("checkbox");
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(input.element.checked).to.be.true;
 		});
 
@@ -55,29 +56,29 @@ describe("FieldSwitch.vue", () => {
 			});
 		});
 
-		it("should contain the default On/Off texts", () => {
+		it("should contain the default On/Off texts", async () => {
 			let span = wrapper.find("span.label");
 			expect(span.attributes()["data-on"]).to.be.equal("On");
 			expect(span.attributes()["data-off"]).to.be.equal("Off");
 		});
 
-		it("should set disabled", () => {
+		it("should set disabled", async () => {
 			wrapper.vm.disabled = true;
-			wrapper.update();
+			await nextTick();
 
 			expect(input.attributes().disabled).to.be.equal("disabled");
 
 			wrapper.vm.disabled = false;
-			wrapper.update();
+			await nextTick();
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.status = false;
-			wrapper.update();
+			await nextTick();
 			expect(input.element.checked).to.be.false;
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.checked = true;
 			input.trigger("change");
 
@@ -95,11 +96,11 @@ describe("FieldSwitch.vue", () => {
 		};
 		let model = { status: true };
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 		});
 
-		it("check attributes", () => {
+		it("check attributes", async () => {
 			let span = wrapper.find("span.label");
 			expect(span.attributes()["data-on"]).to.be.equal("Yes");
 			expect(span.attributes()["data-off"]).to.be.equal("No");
@@ -118,23 +119,23 @@ describe("FieldSwitch.vue", () => {
 		let model = { sex: "female" };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("input");
 		});
 
-		it("check input value", () => {
+		it("check input value", async () => {
 			expect(input.element.checked).to.be.true;
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.sex = "male";
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.checked).to.be.false;
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.checked = true;
 			input.trigger("change");
 

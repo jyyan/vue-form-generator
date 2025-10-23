@@ -77,6 +77,15 @@ export default {
 			}
 		}
 	},
+	created() {
+		// Check if the component is loaded globally
+		// In Vue 3, global components are accessed via appContext
+		const appContext = this.$.appContext;
+		const hasMultiselect = appContext?.components?.multiselect;
+		if (!hasMultiselect) {
+			console.error("'vue-multiselect' is missing. Please download from https://github.com/monterail/vue-multiselect and register the component globally!");
+		}
+	},
 	methods: {
 		updateSelected(value /* , id*/) {
 			this.value = value;
@@ -104,12 +113,6 @@ export default {
 		},
 		onClose(/* value, id */) {
 			// console.log("onClose", value, id);
-		}
-	},
-	created() {
-		// Check if the component is loaded globally
-		if (!this.$root.$options.components["multiselect"]) {
-			console.error("'vue-multiselect' is missing. Please download from https://github.com/monterail/vue-multiselect and register the component globally!");
 		}
 	}
 };

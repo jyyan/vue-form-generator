@@ -1,52 +1,142 @@
 <template>
-	<div class="form-group" :class="getFieldRowClasses(field)">
-      <template v-if="fieldTypeHasInputFirst(field)">
-		<div class="field-wrap" :class="getFieldWrapClasses(field)">
-			<component ref="child" :is="getFieldType(field)" :vfg="vfg" :disabled="fieldDisabled(field)" :model="model" :schema="field" :formOptions="options" @model-updated="onModelUpdated" @validated="onFieldValidated">
-            </component>
+  <div
+    class="form-group"
+    :class="getFieldRowClasses(field)"
+  >
+    <template v-if="fieldTypeHasInputFirst(field)">
+      <div
+        class="field-wrap"
+        :class="getFieldWrapClasses(field)"
+      >
+        <component
+          :is="getFieldType(field)"
+          ref="child"
+          :vfg="vfg"
+          :disabled="fieldDisabled(field)"
+          :model="model"
+          :schema="field"
+          :form-options="options"
+          @model-updated="onModelUpdated"
+          @validated="onFieldValidated"
+        />
 
-            <label v-if="fieldTypeHasLabel(field)" :for="getFieldID(field)" :class="field.labelClasses">
-                <span v-html="field.label"></span>
-                <span v-if='field.help' class="help">
-                    <i class="icon"></i>
-                    <div class="helpText" v-html='field.help'></div>
-                </span>
-            </label>
+        <label
+          v-if="fieldTypeHasLabel(field)"
+          :for="getFieldID(field)"
+          :class="field.labelClasses"
+        >
+          <span v-html="field.label" />
+          <span
+            v-if="field.help"
+            class="help"
+          >
+            <i class="icon" />
+            <div
+              class="helpText"
+              v-html="field.help"
+            />
+          </span>
+        </label>
 
-			<div v-if="buttonVisibility(field)" class="buttons">
-				<button v-for="(btn, index) in field.buttons" @click="buttonClickHandler(btn, field, $event)" :class="btn.classes" :key="index" v-text="btn.label" :type="getButtonType(btn)"></button>
-			</div>
-		</div>
+        <div
+          v-if="buttonVisibility(field)"
+          class="buttons"
+        >
+          <button
+            v-for="(btn, index) in field.buttons"
+            :key="index"
+            :class="btn.classes"
+            :type="getButtonType(btn)"
+            @click="buttonClickHandler(btn, field, $event)"
+            v-text="btn.label"
+          />
+        </div>
+      </div>
 
-		<div v-if="field.hint" class="hint" v-html="fieldHint(field)"></div>
+      <div
+        v-if="field.hint"
+        class="hint"
+        v-html="fieldHint(field)"
+      />
 
-		<div v-if="fieldErrors(field).length > 0" class="errors help-block">
-			<span v-for="(error, index) in fieldErrors(field)" :key="index" v-html="error"></span>
-		</div>
-      </template>
-      <template v-else>
-		<label v-if="fieldTypeHasLabel(field)" :for="getFieldID(field)" :class="field.labelClasses">
-			<span v-html="field.label"></span>
-			<span v-if='field.help' class="help">
-				<i class="icon"></i>
-				<div class="helpText" v-html='field.help'></div>
-			</span>
-		</label>
+      <div
+        v-if="fieldErrors(field).length > 0"
+        class="errors help-block"
+      >
+        <span
+          v-for="(error, index) in fieldErrors(field)"
+          :key="index"
+          v-html="error"
+        />
+      </div>
+    </template>
+    <template v-else>
+      <label
+        v-if="fieldTypeHasLabel(field)"
+        :for="getFieldID(field)"
+        :class="field.labelClasses"
+      >
+        <span v-html="field.label" />
+        <span
+          v-if="field.help"
+          class="help"
+        >
+          <i class="icon" />
+          <div
+            class="helpText"
+            v-html="field.help"
+          />
+        </span>
+      </label>
 
-		<div class="field-wrap" :class="getFieldWrapClasses(field)">
-			<component ref="child" :is="getFieldType(field)" :vfg="vfg" :disabled="fieldDisabled(field)" :model="model" :schema="field" :formOptions="options" @model-updated="onModelUpdated" @validated="onFieldValidated"></component>
-			<div v-if="buttonVisibility(field)" class="buttons">
-				<button v-for="(btn, index) in field.buttons" @click="buttonClickHandler(btn, field, $event)" :class="btn.classes" :key="index" v-text="btn.label" :type="getButtonType(btn)"></button>
-			</div>
-		</div>
+      <div
+        class="field-wrap"
+        :class="getFieldWrapClasses(field)"
+      >
+        <component
+          :is="getFieldType(field)"
+          ref="child"
+          :vfg="vfg"
+          :disabled="fieldDisabled(field)"
+          :model="model"
+          :schema="field"
+          :form-options="options"
+          @model-updated="onModelUpdated"
+          @validated="onFieldValidated"
+        />
+        <div
+          v-if="buttonVisibility(field)"
+          class="buttons"
+        >
+          <button
+            v-for="(btn, index) in field.buttons"
+            :key="index"
+            :class="btn.classes"
+            :type="getButtonType(btn)"
+            @click="buttonClickHandler(btn, field, $event)"
+            v-text="btn.label"
+          />
+        </div>
+      </div>
 
-		<div v-if="field.hint" class="hint" v-html="fieldHint(field)"></div>
+      <div
+        v-if="field.hint"
+        class="hint"
+        v-html="fieldHint(field)"
+      />
 
-		<div v-if="fieldErrors(field).length > 0" class="errors help-block">
-			<span v-for="(error, index) in fieldErrors(field)" :key="index" v-html="error"></span>
-		</div>
-      </template>
-	</div>
+      <div
+        v-if="fieldErrors(field).length > 0"
+        class="errors help-block"
+      >
+        <span
+          v-for="(error, index) in fieldErrors(field)"
+          :key="index"
+          v-html="error"
+        />
+      </div>
+    </template>
+  </div>
 </template>
 <script>
 import { get as objGet, isNil, isFunction } from "lodash";
@@ -55,7 +145,7 @@ import formMixin from "./formMixin.js";
 import fieldComponents from "./utils/fieldsLoader.js";
 
 export default {
-	name: "form-group",
+	name: "FormGroup",
 	components: fieldComponents,
 	mixins: [formMixin],
 	props: {
@@ -63,9 +153,13 @@ export default {
 			type: Object,
 			required: true
 		},
-		model: Object,
+		model: {
+			type: Object,
+			default: null
+		},
 		options: {
-			type: Object
+			type: Object,
+			default: null
 		},
 		field: {
 			type: Object,
@@ -78,6 +172,7 @@ export default {
 			}
 		}
 	},
+	emits: ["validated", "model-updated"],
 	methods: {
 		// Should field type have set as input first?
 		fieldTypeHasInputFirst(field) {

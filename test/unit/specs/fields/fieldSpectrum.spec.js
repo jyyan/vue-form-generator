@@ -1,15 +1,16 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import FieldSpectrum from "src/fields/optional/fieldSpectrum.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 let input;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldSpectrum, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -33,17 +34,17 @@ describe("fieldSpectrum.vue", () => {
 		};
 		let model = { color: "#ff8822" };
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 		});
 
-		it("should contain an input color element", () => {
+		it("should contain an input color element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("input")).to.be.true;
 			expect(input.attributes().type).to.be.equal("text");
 		});
 
-		it.skip("should contain the value", () => {
+		it.skip("should contain the value", async () => {
 			expect(wrapper.vm.picker.spectrum("get").toHexString()).to.be.equal("#ff8822");
 		});
 
@@ -57,14 +58,14 @@ describe("fieldSpectrum.vue", () => {
 			});
 		});
 
-		it.skip("input value should be the model value after changed", () => {
+		it.skip("input value should be the model value after changed", async () => {
 			model.color = "#ffff00";
-			wrapper.update();
+			await nextTick();
 
 			expect(wrapper.vm.picker.spectrum("get").toHexString()).to.be.equal("#ffff00");
 		});
 
-		it.skip("model value should be the input value if changed", () => {
+		it.skip("model value should be the input value if changed", async () => {
 			wrapper.vm.picker.spectrum("set", "#123456");
 			wrapper.find(".sp-input").trigger("change");
 

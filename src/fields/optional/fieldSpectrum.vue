@@ -52,7 +52,7 @@ export default {
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.picker) this.picker.spectrum("destroy");
 	}
 };

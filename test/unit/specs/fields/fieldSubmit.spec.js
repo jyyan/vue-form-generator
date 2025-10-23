@@ -1,14 +1,14 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 
 import FieldSubmit from "src/fields/core/fieldSubmit.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldSubmit, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -34,12 +34,12 @@ describe("fieldSubmit.vue", () => {
 		let model = { name: "John Doe" };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ vfg, schema, formOptions, model, disabled: false });
 			input = wrapper.find("input");
 		});
 
-		it("should contain an input submit element", () => {
+		it("should contain an input submit element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("input")).to.be.true;
 			expect(input.attributes().type).to.be.equal("submit");
@@ -47,7 +47,7 @@ describe("fieldSubmit.vue", () => {
 		});
 
 		describe("valid form", () => {
-			before(() => {
+			before(async () => {
 				vfg.validate = () => true;
 				sinon.spy(vfg, "validate");
 			});
@@ -57,7 +57,7 @@ describe("fieldSubmit.vue", () => {
 				vfg.validate.resetHistory();
 			});
 
-			it("should not call validate but should call onSubmit if validateBeforeSubmit is false", () => {
+			it("should not call validate but should call onSubmit if validateBeforeSubmit is false", async () => {
 				input.trigger("click");
 
 				expect(vfg.validate.notCalled).to.be.true;
@@ -65,7 +65,7 @@ describe("fieldSubmit.vue", () => {
 				expect(schema.onSubmit.calledWith(model, schema)).to.be.true;
 			});
 
-			it("should call validate and onSubmit if validateBeforeSubmit is true", () => {
+			it("should call validate and onSubmit if validateBeforeSubmit is true", async () => {
 				schema.validateBeforeSubmit = true;
 
 				input.trigger("click");
@@ -76,7 +76,7 @@ describe("fieldSubmit.vue", () => {
 		});
 
 		describe("invalid form", () => {
-			before(() => {
+			before(async () => {
 				vfg.validate = () => false;
 				sinon.spy(vfg, "validate");
 			});
@@ -86,7 +86,7 @@ describe("fieldSubmit.vue", () => {
 				vfg.validate.resetHistory();
 			});
 
-			it("should call validate but should not call onSubmit if validateBeforeSubmit is true", () => {
+			it("should call validate but should not call onSubmit if validateBeforeSubmit is true", async () => {
 				schema.validateBeforeSubmit = true;
 
 				input.trigger("click");
@@ -97,7 +97,7 @@ describe("fieldSubmit.vue", () => {
 		});
 
 		describe("async validate", () => {
-			before(() => {
+			before(async () => {
 				formOptions.validateAsync = true;
 				vfg.validate = sinon.stub();
 				schema.onSubmit = sinon.spy();
@@ -143,7 +143,7 @@ describe("fieldSubmit.vue", () => {
 			});
 		});
 
-		it("should have 2 classes", () => {
+		it("should have 2 classes", async () => {
 			expect(input.classes()).to.include("applied-class");
 			expect(input.classes()).to.include("another-class");
 		});

@@ -1,14 +1,15 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import FieldCheckbox from "src/fields/core/fieldCheckbox.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField(data, methods) {
 	const _wrapper = mount(FieldCheckbox, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -31,37 +32,37 @@ describe("FieldCheckbox.vue", () => {
 		let model = { status: true };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField({ schema, model });
 			input = wrapper.find("input");
 		});
 
-		it("should contain a checkbox element", () => {
+		it("should contain a checkbox element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("input")).to.be.true;
 			expect(input.attributes().type).to.be.equal("checkbox");
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(input.element.checked).to.be.true;
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.status = false;
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.checked).to.be.false;
 		});
 
-		it.skip("model value should be the input value if changed", () => {
+		it.skip("model value should be the input value if changed", async () => {
 			model.status = true;
 			wrapper.trigger("click");
-			wrapper.update();
+			await nextTick();
 
 			expect(model.status).to.be.false;
 		});
 
-		it("should have 2 classes", () => {
+		it("should have 2 classes", async () => {
 			expect(wrapper.classes()).to.include("applied-class");
 			expect(wrapper.classes()).to.include("another-class");
 		});
@@ -97,12 +98,12 @@ describe("FieldCheckbox.vue", () => {
 			let model = {};
 			let input;
 
-			before(() => {
+			before(async () => {
 				createField({ schema, model });
 				input = wrapper.find("input");
 			});
 
-			it("input should have data-* attribute", () => {
+			it("input should have data-* attribute", async () => {
 				expect(input.attributes()["data-input"]).to.be.equal("tooltip");
 			});
 		});
@@ -121,12 +122,12 @@ describe("FieldCheckbox.vue", () => {
 			let model = {};
 			let input;
 
-			before(() => {
+			before(async () => {
 				createField({ schema, model });
 				input = wrapper.find("input");
 			});
 
-			it("input should have data-* attribute", () => {
+			it("input should have data-* attribute", async () => {
 				expect(input.attributes()["data-input"]).to.be.equal("tooltip");
 			});
 		});

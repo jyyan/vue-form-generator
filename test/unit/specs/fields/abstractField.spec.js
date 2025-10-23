@@ -1,9 +1,6 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 
 import AbstractField from "src/fields/abstractField";
-
-const localVue = createLocalVue();
-localVue.component("AbstractField", AbstractField);
 
 let wrapper, field;
 const defaultTemplate = `<abstract-field :schema="schema" :model="model" :disabled="disabled" ref="field"></abstract-field>`;
@@ -18,7 +15,11 @@ function createField(data, methods, template) {
 	};
 
 	const _wrapper = mount(Component, {
-		localVue
+		global: {
+			components: {
+				"abstract-field": AbstractField
+			}
+		}
 	});
 
 	wrapper = _wrapper;
@@ -36,16 +37,16 @@ describe("abstractField.vue", () => {
 		};
 		let model = { name: "John Doe" };
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it("should give the model static value", () => {
+		it("should give the model static value", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(field.value).to.be.equal("John Doe");
 		});
 
-		it("should set new value to model if value changed", () => {
+		it("should set new value to model if value changed", async () => {
 			field.value = "Foo Bar";
 			expect(model.name).to.be.equal("Foo Bar");
 		});
@@ -63,16 +64,16 @@ describe("abstractField.vue", () => {
 			}
 		};
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it("should give the model static value", () => {
+		it("should give the model static value", async () => {
 			expect(field).to.be.exist;
 			expect(field.value).to.be.equal("John Doe");
 		});
 
-		it("should set new value to model if value changed", () => {
+		it("should set new value to model if value changed", async () => {
 			field.value = "Foo Bar";
 
 			expect(model.user.name).to.be.equal("Foo Bar");
@@ -89,16 +90,16 @@ describe("abstractField.vue", () => {
 			user: {}
 		};
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it("should give the model static value", () => {
+		it("should give the model static value", async () => {
 			expect(field).to.be.exist;
 			expect(field.value).to.be.undefined;
 		});
 
-		it("should set new value to model if value changed", () => {
+		it("should set new value to model if value changed", async () => {
 			field.value = "Foo Bar";
 
 			expect(model.user.name.first).to.be.equal("Foo Bar");
@@ -115,11 +116,11 @@ describe("abstractField.vue", () => {
 		};
 		let model = {};
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it.skip("should be called the schema.get function", () => {
+		it.skip("should be called the schema.get function", async () => {
 			expect(field).to.be.exist;
 
 			field.schema.get.reset();
@@ -128,7 +129,7 @@ describe("abstractField.vue", () => {
 			expect(field.schema.get.calledOnce).to.be.true;
 		});
 
-		it("should set new value to model if value changed", () => {
+		it("should set new value to model if value changed", async () => {
 			field.schema.set.reset();
 			field.value = "John Roe";
 
@@ -145,7 +146,7 @@ describe("abstractField.vue", () => {
 		};
 		let model = { name: "John Doe" };
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 			field.formatValueToField = function(value) {
 				return "**" + value + "**";
@@ -156,11 +157,11 @@ describe("abstractField.vue", () => {
 			};
 		});
 
-		it("should return the formatted value", () => {
+		it("should return the formatted value", async () => {
 			expect(field.value).to.be.equal("**John Doe**");
 		});
 
-		it("should set the formatted value to model", () => {
+		it("should set the formatted value to model", async () => {
 			field.value = "Foo Bar";
 
 			expect(model.name).to.be.equal("!!Foo Bar!!");
@@ -176,11 +177,11 @@ describe("abstractField.vue", () => {
 		};
 		let model = { name: "John Doe" };
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it("should called once the schema.onChanged", () => {
+		it("should called once the schema.onChanged", async () => {
 			schema.onChanged.resetHistory();
 			field.value = "Jane Doe";
 
@@ -200,18 +201,18 @@ describe("abstractField.vue", () => {
 			validateAfterChanged: false
 		};
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model, options });
 			field.validate = sinon.spy();
 		});
 
-		it("should not call validate function after value changed", () => {
+		it("should not call validate function after value changed", async () => {
 			model.name = "Jane Doe";
 
 			expect(field.validate.callCount).to.be.equal(0);
 		});
 
-		it("should call validate function after value changed", () => {
+		it("should call validate function after value changed", async () => {
 			options.validateAfterChanged = true;
 			// seems to be an issue with how the field is defined, the update to 'options' isn't carried over to field.formOptions
 			field.formOptions = options;
@@ -231,11 +232,11 @@ describe("abstractField.vue", () => {
 
 		let model = { name: "John Doe" };
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it("should call schema validator", () => {
+		it("should call schema validator", async () => {
 			schema.validator.resetHistory();
 			field.validate();
 
@@ -254,11 +255,11 @@ describe("abstractField.vue", () => {
 
 		let model = { name: "John Doe" };
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model, disabled: true });
 		});
 
-		it("should not call schema validator", () => {
+		it("should not call schema validator", async () => {
 			schema.validator.resetHistory();
 			field.validate();
 
@@ -277,11 +278,11 @@ describe("abstractField.vue", () => {
 
 		let model = { name: "John Doe" };
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it("should not call schema validator", () => {
+		it("should not call schema validator", async () => {
 			schema.validator.resetHistory();
 			field.validate();
 
@@ -301,11 +302,11 @@ describe("abstractField.vue", () => {
 
 		let model = { name: "John Doe" };
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it("should call schema validator", () => {
+		it("should call schema validator", async () => {
 			spy1.resetHistory();
 			spy2.resetHistory();
 			field.validate();
@@ -328,11 +329,11 @@ describe("abstractField.vue", () => {
 		};
 		let model = { name: "John Doe" };
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField({ schema, model });
 		});
 
-		it("should called once the schema.onValidated", () => {
+		it("should called once the schema.onValidated", async () => {
 			schema.onValidated.resetHistory();
 			let res = field.validate();
 
@@ -356,7 +357,7 @@ describe("abstractField.vue", () => {
 		let model = { name: "John Doe" };
 		let onValidated = sinon.spy();
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			createField(
 				{ schema, model },
 				{ onValidated },
@@ -364,7 +365,7 @@ describe("abstractField.vue", () => {
 			);
 		});
 
-		it("should return empty array", () => {
+		it("should return empty array", async () => {
 			onValidated.resetHistory();
 			let res = field.validate();
 
@@ -375,7 +376,7 @@ describe("abstractField.vue", () => {
 			expect(onValidated.calledWith(true, [])).to.be.true;
 		});
 
-		it("should not call 'onValidated'", () => {
+		it("should not call 'onValidated'", async () => {
 			onValidated.resetHistory();
 			let res = field.validate(true);
 
@@ -385,7 +386,7 @@ describe("abstractField.vue", () => {
 			expect(onValidated.callCount).to.be.equal(0);
 		});
 
-		it("should return empty array", () => {
+		it("should return empty array", async () => {
 			model.name = "Al";
 			onValidated.resetHistory();
 			let res = field.validate();
@@ -408,22 +409,22 @@ describe("abstractField.vue", () => {
 		};
 		let model = { name: "John Doe" };
 
-		before(() => {
+		before(async () => {
 			createField({ schema, model });
 		});
 
-		it("should be undefined", () => {
+		it("should be undefined", async () => {
 			expect(field.errors).to.be.an.instanceof(Array);
 		});
 
-		it("should be an empty array", () => {
+		it("should be an empty array", async () => {
 			field.clearValidationErrors();
 
 			expect(field.errors).to.be.not.undefined;
 			expect(field.errors).to.be.length(0);
 		});
 
-		it("should contain one error string", () => {
+		it("should contain one error string", async () => {
 			field.validate();
 
 			expect(field.errors).to.be.length(1);
@@ -440,21 +441,21 @@ describe("abstractField.vue", () => {
 		};
 		let model = {};
 
-		before(() => {
+		before(async () => {
 			createField({ schema, model });
 		});
 
-		it("should return slugified inputName, if available", () => {
+		it("should return slugified inputName, if available", async () => {
 			expect(field.getFieldID(schema)).to.be.equal("input-name");
 		});
 
-		it("should return slugified label, if no inputName", () => {
+		it("should return slugified label, if no inputName", async () => {
 			delete schema.inputName;
 
 			expect(field.getFieldID(schema)).to.be.equal("first-name");
 		});
 
-		it("should return slugified model name, if no inputName or label", () => {
+		it("should return slugified model name, if no inputName or label", async () => {
 			delete schema.label;
 
 			expect(field.getFieldID(schema)).to.be.equal("user-model");
@@ -471,11 +472,11 @@ describe("abstractField.vue", () => {
 		};
 		let model = {};
 
-		before(() => {
+		before(async () => {
 			createField({ schema, model });
 		});
 
-		it("should have 2 classes ('applied-class' and 'another-class')", () => {
+		it("should have 2 classes ('applied-class' and 'another-class')", async () => {
 			expect(field.getFieldClasses().length).to.be.equal(2);
 			expect(field.getFieldClasses()[0]).to.be.equal("applied-class");
 			expect(field.getFieldClasses()[1]).to.be.equal("another-class");

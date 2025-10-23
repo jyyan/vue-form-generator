@@ -1,23 +1,14 @@
 const path = require("path");
-const vueLoaderConfig = require("./vue-loader.conf");
+const { VueLoaderPlugin } = require("vue-loader");
 const nodeExternals = require("webpack-node-externals");
+const ESLintPlugin = require("eslint-webpack-plugin");
 
 let rules = [
-	{
-		test: /\.(js|vue)$/,
-		loader: "eslint-loader",
-		enforce: "pre",
-		include: [path.resolve("src")],
-		options: {
-			formatter: require("eslint-friendly-formatter")
-		}
-	},
 	{
 		test: /\.vue$/,
 		loader: "vue-loader",
 		include: [path.resolve("src"), path.resolve("test")],
-		exclude: /node_modules/,
-		options: vueLoaderConfig
+		exclude: /node_modules/
 	},
 	{
 		test: /\.js$/,
@@ -26,18 +17,31 @@ let rules = [
 		exclude: /node_modules/
 	},
 	{
+		test: /\.pug$/,
+		loader: "pug-plain-loader"
+	},
+	{
+		test: /\.s[ac]ss$/i,
+		use: [
+			"vue-style-loader",
+			"css-loader",
+			"sass-loader"
+		]
+	},
+	{
 		test: /\.(woff2?|svg)$/,
-		loader: "url-loader",
+		type: "asset/inline",
 		include: [path.resolve("src"), path.resolve("test")]
 	},
 	{
 		test: /\.(ttf|eot)$/,
-		loader: "url-loader",
+		type: "asset/inline",
 		include: [path.resolve("src"), path.resolve("test")]
 	}
 ];
 
 module.exports = {
+	mode: "development",
 	devtool: "inline-cheap-module-source-map",
 
 	entry: "./src/index.js",
@@ -45,21 +49,29 @@ module.exports = {
 	output: {
 		path: path.resolve("dist"),
 		filename: "vfg.js",
-		library: "VueFormGenerator",
-		libraryTarget: "umd"
+		library: {
+			name: "VueFormGenerator",
+			type: "umd"
+		}
 	},
 
 	module: {
 		rules
 	},
 
-	plugins: [],
+	plugins: [
+		new VueLoaderPlugin(),
+		new ESLintPlugin({
+			extensions: ["js", "vue"],
+			context: path.resolve("src"),
+			formatter: require("eslint-friendly-formatter")
+		})
+	],
 
 	resolve: {
-		aliasFields: ["browser"],
 		extensions: [".js", ".vue", ".json"],
 		alias: {
-			vue$: "vue/dist/vue.esm.js",
+			vue$: "vue/dist/vue.esm-bundler.js",
 			src: path.resolve("src")
 		}
 	},

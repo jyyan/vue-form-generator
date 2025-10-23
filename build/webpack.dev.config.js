@@ -1,24 +1,15 @@
 const path = require("path");
 const webpack = require("webpack");
+const { VueLoaderPlugin } = require("vue-loader");
+const ESLintPlugin = require("eslint-webpack-plugin");
 const projectRoot = path.resolve(__dirname, "../");
-const vueLoaderConfig = require("./vue-loader.conf");
 
 let rules = [
-	{
-		test: /\.(js|vue)$/,
-		loader: "eslint-loader",
-		enforce: "pre",
-		include: [path.resolve("src"), path.resolve("dev")],
-		options: {
-			formatter: require("eslint-friendly-formatter")
-		}
-	},
 	{
 		test: /\.vue$/,
 		loader: "vue-loader",
 		include: [path.resolve("src"), path.resolve("dev")],
-		exclude: /node_modules/,
-		options: vueLoaderConfig
+		exclude: /node_modules/
 	},
 	{
 		test: /\.js$/,
@@ -27,21 +18,47 @@ let rules = [
 		exclude: /node_modules/
 	},
 	{
+		test: /\.pug$/,
+		loader: "pug-plain-loader"
+	},
+	{
+		test: /\.s[ac]ss$/i,
+		use: [
+			"vue-style-loader",
+			"css-loader",
+			"sass-loader"
+		]
+	},
+	{
+		test: /\.css$/i,
+		use: [
+			"vue-style-loader",
+			"css-loader"
+		]
+	},
+	{
 		test: /\.(woff2?|svg)$/,
-		loader: "url-loader",
+		type: "asset/inline",
 		include: [path.resolve("src"), path.resolve("dev")]
 	},
 	{
 		test: /\.(ttf|eot)$/,
-		loader: "url-loader",
+		type: "asset/inline",
 		include: [path.resolve("src"), path.resolve("dev")]
 	}
 ];
 
 module.exports = {
+	mode: "development",
 	devtool: "source-map",
 	devServer: {
-		contentBase: [path.resolve("dev/projects")]
+		static: [
+			{
+				directory: path.resolve("dev/projects")
+			}
+		],
+		hot: true,
+		port: 8080
 	},
 	entry: {
 		full: path.resolve("dev", "projects", "full", "main.js"),
@@ -59,11 +76,20 @@ module.exports = {
 	},
 
 	plugins: [
+		new VueLoaderPlugin(),
 		new webpack.DefinePlugin({
+			__VUE_OPTIONS_API__: JSON.stringify(true),
+			__VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+			__VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
 			"process.env": {
 				NODE_ENV: JSON.stringify("development"),
 				FULL_BUNDLE: true
 			}
+		}),
+		new ESLintPlugin({
+			extensions: ["js", "vue"],
+			files: ["src/**/*.{js,vue}", "dev/**/*.{js,vue}"],
+			formatter: require("eslint-friendly-formatter")
 		})
 	],
 
@@ -74,7 +100,7 @@ module.exports = {
 	resolve: {
 		extensions: [".js", ".vue", ".json"],
 		alias: {
-			vue$: "vue/dist/vue.esm.js",
+			vue$: "vue/dist/vue.esm-bundler.js",
 			"@": path.resolve("src")
 		}
 	}

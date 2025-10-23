@@ -17,10 +17,6 @@
 <script>
 import mixinUtils from "../../mixins/utils.js";
 
-import Vue from "vue";
-import Multiselect from "vue-multiselect";
-Vue.component("multiselect", Multiselect);
-
 export default {
 	mixins: [mixinUtils],
 
@@ -53,5 +49,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../../style.scss";
+@use "../../style.scss";
 </style>

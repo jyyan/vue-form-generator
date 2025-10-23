@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 
 import FieldRangeSlider from "src/fields/optional/fieldRangeSlider.vue";
 
@@ -7,13 +7,13 @@ let $ = jQuery(window);
 require("ion-rangeslider");
 global.$ = $;
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldRangeSlider, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -38,12 +38,12 @@ describe("fieldRangeSlider.vue", () => {
 		let model = { rating: 8 };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("input");
 		});
 
-		it("should contain an input text element", () => {
+		it("should contain an input text element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("input")).to.be.true;
 			expect(input.attributes().type).to.be.equal("text");
@@ -52,7 +52,7 @@ describe("fieldRangeSlider.vue", () => {
 			expect(input.attributes()["data-disable"]).to.be.undefined;
 		});
 
-		it.skip("should contain the value", () => {
+		it.skip("should contain the value", async () => {
 			let origin = wrapper.find(".irs-slider.single");
 			console.log(origin.element.style);
 
@@ -69,14 +69,14 @@ describe("fieldRangeSlider.vue", () => {
 			});
 		});
 
-		it.skip("input value should be the model value after changed", () => {
+		it.skip("input value should be the model value after changed", async () => {
 			model.rating = 3;
 			let origin = wrapper.find(".irs-slider.single");
 
 			expect(origin.element.style.left).to.be.within("20%", "40%");
 		});
 
-		it.skip("model value should be the input value if changed", () => {
+		it.skip("model value should be the input value if changed", async () => {
 			wrapper.vm.slider.update({ from: 6 });
 			wrapper.vm.slider.callOnChange(wrapper.vm.slider); // trigger changes
 

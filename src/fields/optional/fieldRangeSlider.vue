@@ -68,7 +68,7 @@ export default {
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.slider) this.slider.destroy();
 	}
 };

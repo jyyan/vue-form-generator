@@ -1,14 +1,15 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import FieldSelect from "src/fields/core/fieldSelect.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldSelect, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -32,18 +33,18 @@ describe("fieldSelect.vue", () => {
 		let model = { city: "Paris" };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("select");
 		});
 
-		it("should contain a select element", () => {
+		it("should contain a select element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("select")).to.be.true;
 			expect(input.classes()).to.include("form-control");
 		});
 
-		it("should contain option elements", () => {
+		it("should contain option elements", async () => {
 			let options = input.findAll("option");
 
 			expect(options.length).to.be.equal(4 + 1); // +1 for <non selected>
@@ -52,14 +53,14 @@ describe("fieldSelect.vue", () => {
 			expect(options.at(2).element.selected).to.be.true;
 		});
 
-		it("should contain a <non selected> element", () => {
+		it("should contain a <non selected> element", async () => {
 			let options = input.findAll("option");
 
 			expect(options.at(0).attributes().disabled).to.be.undefined;
 			expect(options.at(0).text()).to.be.equal("<Nothing selected>");
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(input.element.value).to.be.equal("Paris");
 		});
 
@@ -73,56 +74,56 @@ describe("fieldSelect.vue", () => {
 			});
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.city = "Rome";
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("Rome");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.value = "London";
 			input.trigger("change");
 
 			expect(model.city).to.be.equal("London");
 		});
 
-		it("should contain a disabled <non selected> element if required", () => {
+		it("should contain a disabled <non selected> element if required", async () => {
 			schema.required = true;
-			wrapper.update();
+			await nextTick();
 			let options = input.findAll("option");
 
 			expect(options.at(0).attributes().disabled).to.be.equal("disabled");
 			expect(options.at(0).text()).to.be.equal("<Nothing selected>");
 		});
 
-		it("should show the customized <non selected> text", () => {
+		it("should show the customized <non selected> text", async () => {
 			schema.selectOptions = {
 				noneSelectedText: "Empty list"
 			};
-			wrapper.update();
+			await nextTick();
 			let options = input.findAll("option");
 
 			expect(options.at(0).attributes().disabled).to.be.equal("disabled");
 			expect(options.at(0).text()).to.be.equal("Empty list");
 
 			schema.selectOptions = null;
-			wrapper.update();
+			await nextTick();
 		});
 
-		it("should hide the customized <non selected> text", () => {
+		it("should hide the customized <non selected> text", async () => {
 			schema.selectOptions = {
 				noneSelectedText: "Empty list",
 				hideNoneSelectedText: true
 			};
-			wrapper.update();
+			await nextTick();
 			let options = input.findAll("option");
 
 			expect(options.at(0).attributes().disabled).to.be.equal("disabled");
 			expect(options.at(0).text()).to.not.be.equal("Empty list");
 
 			schema.selectOptions = null;
-			wrapper.update();
+			await nextTick();
 		});
 	});
 
@@ -143,13 +144,13 @@ describe("fieldSelect.vue", () => {
 		let model = { city: 2 };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("select");
-			wrapper.update();
+			await nextTick();
 		});
 
-		it("should contain option elements", () => {
+		it("should contain option elements", async () => {
 			let options = input.findAll("option");
 
 			expect(options.length).to.be.equal(6 + 1); // +1 for <non selected>
@@ -159,14 +160,14 @@ describe("fieldSelect.vue", () => {
 			expect(options.at(1).element.selected).to.be.false;
 		});
 
-		it("should contain optgroup elements", () => {
+		it("should contain optgroup elements", async () => {
 			let optgroups = input.findAll("optgroup");
 
 			expect(optgroups.length).to.be.equal(1);
 			expect(optgroups.at(0).element.label).to.be.equal("HUN");
 		});
 
-		it("should contain option elements in optgroup", () => {
+		it("should contain option elements in optgroup", async () => {
 			let og = input.find("optgroup");
 			let options = og.findAll("option");
 
@@ -177,18 +178,18 @@ describe("fieldSelect.vue", () => {
 			expect(options.at(1).element.value).to.be.equal("6");
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(input.element.value).to.be.equal("2");
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.city = 3;
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("3");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.value = "4";
 			input.trigger("change");
 
@@ -214,30 +215,30 @@ describe("fieldSelect.vue", () => {
 		let model = { city: 2 };
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("select");
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(input.element.value).to.be.equal("2");
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.city = 3;
-			wrapper.update();
+			await nextTick();
 
 			expect(input.element.value).to.be.equal("3");
 		});
 
-		it("model value should be the input value if changed", () => {
+		it("model value should be the input value if changed", async () => {
 			input.element.value = "4";
 			input.trigger("change");
 
 			expect(model.city).to.be.equal(4);
 		});
 
-		it("should have 2 classes", () => {
+		it("should have 2 classes", async () => {
 			expect(input.classes()).to.include("applied-class");
 			expect(input.classes()).to.include("another-class");
 		});
@@ -271,12 +272,12 @@ describe("fieldSelect.vue", () => {
 			let model = {};
 			let input;
 
-			before(() => {
+			before(async () => {
 				createField2({ schema, model });
 				input = wrapper.find("select");
 			});
 
-			it("input should have data-toggle attribute", () => {
+			it("input should have data-toggle attribute", async () => {
 				expect(input.attributes()["data-toggle"]).to.be.equal("tooltip");
 			});
 		});
@@ -303,12 +304,12 @@ describe("fieldSelect.vue", () => {
 			let model = {};
 			let input;
 
-			before(() => {
+			before(async () => {
 				createField2({ schema, model });
 				input = wrapper.find("select");
 			});
 
-			it("input should have data-toggle attribute", () => {
+			it("input should have data-toggle attribute", async () => {
 				expect(input.attributes()["data-toggle"]).to.be.equal("tooltip");
 			});
 		});

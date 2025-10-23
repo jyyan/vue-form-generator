@@ -1,17 +1,25 @@
 {
 	"presets": [
 		[
-			"env",
+			"@babel/preset-env",
 			{
-				"modules": false,
-				"useBuiltIns": "entry"
+				"modules": false
 			}
-		],
-		"stage-2"
+		]
 	],
-	"plugins": ["transform-runtime", "lodash"],
+	"plugins": ["lodash"],
 	"env": {
 		"test": {
+			"presets": [
+				[
+					"@babel/preset-env",
+					{
+						"targets": {
+							"node": "current"
+						}
+					}
+				]
+			],
 			"plugins": ["istanbul"]
 		}
 	}

@@ -16,15 +16,6 @@ let inputFormat = "YYYY-MM-DD HH:mm:ss";
 export default {
 	mixins: [abstractField],
 
-	methods: {
-		getDateFormat() {
-			if (this.schema.dateTimePickerOptions && this.schema.dateTimePickerOptions.format) return this.schema.dateTimePickerOptions.format;
-			else return inputFormat;
-		},
-
-		...dateFieldHelper
-	},
-
 	mounted() {
 		this.$nextTick(function() {
 			if (window.$ && window.$.fn.datetimepicker) {
@@ -46,12 +37,21 @@ export default {
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (window.$ && window.$.fn.datetimepicker) {
 			$(this.$el)
 				.data("DateTimePicker")
 				.destroy();
 		}
+	},
+
+	methods: {
+		getDateFormat() {
+			if (this.schema.dateTimePickerOptions && this.schema.dateTimePickerOptions.format) return this.schema.dateTimePickerOptions.format;
+			else return inputFormat;
+		},
+
+		...dateFieldHelper
 	}
 };
 </script>

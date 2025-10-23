@@ -1,4 +1,3 @@
-/* global sinon */
 import { clone } from "lodash";
 
 import { createDefaultObject, getMultipleFields, mergeMultiObjectFields } from "src/utils/schema";
@@ -24,7 +23,7 @@ describe("SchemaUtils", () => {
 			]
 		};
 
-		it("create default object by schema", () => {
+		it("create default object by schema", async () => {
 			let res = createDefaultObject(schema, {
 				id: 5,
 				age: 45
@@ -60,7 +59,7 @@ describe("SchemaUtils", () => {
 			]
 		};
 
-		it("collect fields from schema where multi is true", () => {
+		it("collect fields from schema where multi is true", async () => {
 			let res = getMultipleFields(schema);
 			expect(res.length).to.be.equal(3);
 			expect(res[0].model).to.be.equal("age");
@@ -81,7 +80,7 @@ describe("SchemaUtils", () => {
 
 		let models = [{ id: 1, name: "John", age: 25, status: true }, { id: 2, name: "James", age: 30, status: true }];
 
-		it("create merged model from multiple objects #1", () => {
+		it("create merged model from multiple objects #1", async () => {
 			let res = mergeMultiObjectFields(schema, models);
 			expect(res).to.be.deep.equal({
 				name: undefined,
@@ -90,7 +89,7 @@ describe("SchemaUtils", () => {
 			});
 		});
 
-		it("create merged model from multiple objects #2", () => {
+		it("create merged model from multiple objects #2", async () => {
 			models[1].age = 25;
 			models[1].status = false;
 
@@ -102,7 +101,7 @@ describe("SchemaUtils", () => {
 			});
 		});
 
-		it("create merged model from cloned objects", () => {
+		it("create merged model from cloned objects", async () => {
 			models[1] = clone(models[0]);
 
 			let res = mergeMultiObjectFields(schema, models);

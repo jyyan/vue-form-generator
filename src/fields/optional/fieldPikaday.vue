@@ -18,6 +18,16 @@ export default {
 		};
 	},
 
+	mounted() {
+		this.initialize(objGet(this.schema, "pikadayOptions", {}));
+	},
+
+	beforeUnmount() {
+		if (this.picker) {
+			this.picker.destroy();
+		}
+	},
+
 	methods: {
 		getDateFormat() {
 			return objGet(this.schema, "pikadayOptions.format", inputFormat);
@@ -43,16 +53,6 @@ export default {
 					console.warn("Pikaday is missing. Please download from https://github.com/dbushell/Pikaday/ and load the script and CSS in the HTML head section!");
 				}
 			});
-		}
-	},
-
-	mounted() {
-		this.initialize(objGet(this.schema, "pikadayOptions", {}));
-	},
-
-	beforeDestroy() {
-		if (this.picker) {
-			this.picker.destroy();
 		}
 	}
 };

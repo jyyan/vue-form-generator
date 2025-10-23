@@ -1,14 +1,15 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import fieldUpload from "src/fields/core/fieldUpload.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(fieldUpload, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -34,14 +35,14 @@ describe("fieldUpload.vue", () => {
 		let attributes = ["disabled", "placeholder", "readonly"];
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("input");
 			schema.inputType = "file";
-			wrapper.update();
+			await nextTick();
 		});
 
-		it("should contain an input text element", () => {
+		it("should contain an input text element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("input")).to.be.true;
 			expect(input.attributes().type).to.be.equal("file");
@@ -55,19 +56,19 @@ describe("fieldUpload.vue", () => {
 				});
 			});
 
-			it("should set name", () => {
+			it("should set name", async () => {
 				expect(input.attributes().name).to.be.equal("testupload");
 			});
 
-			it("should set required", () => {
+			it("should set required", async () => {
 				expect(input.attributes().required).to.be.undefined;
 			});
 
-			it("should set multiple", () => {
+			it("should set multiple", async () => {
 				expect(input.attributes().multiple).to.be.equal("multiple");
 			});
 
-			it("should set accept", () => {
+			it("should set accept", async () => {
 				expect(input.attributes().accept).to.be.equal("image/*");
 			});
 		});

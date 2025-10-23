@@ -1,14 +1,15 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 
 import FieldLabel from "src/fields/core/fieldLabel.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldLabel, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -28,28 +29,28 @@ describe("fieldLabel.vue", () => {
 		let model = { timestamp: "2 days ago" };
 		let span;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			span = wrapper.find("span");
 		});
 
-		it("should contain a span element", () => {
+		it("should contain a span element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(span.is("span")).to.be.true;
 		});
 
-		it("should contain the value", () => {
+		it("should contain the value", async () => {
 			expect(span.text()).to.be.equal("2 days ago");
 		});
 
-		it("input value should be the model value after changed", () => {
+		it("input value should be the model value after changed", async () => {
 			model.timestamp = "Foo bar";
-			wrapper.update();
+			await nextTick();
 
 			expect(span.text()).to.be.equal("Foo bar");
 		});
 
-		it("should have 2 classes", () => {
+		it("should have 2 classes", async () => {
 			expect(span.classes()).to.include("applied-class");
 			expect(span.classes()).to.include("another-class");
 		});
@@ -76,12 +77,12 @@ describe("fieldLabel.vue", () => {
 			let model = {};
 			let label;
 
-			before(() => {
+			before(async () => {
 				createField2({ schema, model });
 				label = wrapper.find("span");
 			});
 
-			it("label should have data-* attribute", () => {
+			it("label should have data-* attribute", async () => {
 				expect(label.attributes()["data-label"]).to.be.equal("help-block");
 			});
 		});
@@ -103,12 +104,12 @@ describe("fieldLabel.vue", () => {
 			let model = {};
 			let label;
 
-			before(() => {
+			before(async () => {
 				createField2({ schema, model });
 				label = wrapper.find("span");
 			});
 
-			it("label should have data-* attribute", () => {
+			it("label should have data-* attribute", async () => {
 				expect(label.attributes()["data-label"]).to.be.equal("help-block");
 			});
 		});

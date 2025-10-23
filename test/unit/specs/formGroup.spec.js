@@ -1,14 +1,12 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 
 import formGroup from "src/formGroup.vue";
 
-const localVue = createLocalVue();
 let wrapper;
 
 function createFormGroup(data, methods) {
 	const _wrapper = mount(formGroup, {
-		localVue,
-		propsData: data,
+		props: data,
 		methods: methods
 	});
 
@@ -19,19 +17,19 @@ function createFormGroup(data, methods) {
 describe("formGroup.vue", () => {
 	describe("check fieldTypeHasLabel function", () => {
 		let form;
-		before(() => {
+		before(async () => {
 			createFormGroup({ field: {} }, {});
 			form = wrapper.vm;
 		});
 
-		it("should return true", () => {
+		it("should return true", async () => {
 			expect(form.fieldTypeHasLabel({ type: "input", inputType: "checkbox", label: "checkbox" })).to.be.true;
 			expect(form.fieldTypeHasLabel({ type: "input", inputType: "text", label: "text" })).to.be.true;
 			expect(form.fieldTypeHasLabel({ type: "checklist", label: "checklist" })).to.be.true;
 			expect(form.fieldTypeHasLabel({ type: "input", inputType: "image", label: "image" })).to.be.true;
 		});
 
-		it("should return false", () => {
+		it("should return false", async () => {
 			// with label text defined
 			expect(form.fieldTypeHasLabel({ type: "input", inputType: "button", label: "button" })).to.be.false;
 			expect(form.fieldTypeHasLabel({ type: "input", inputType: "submit", label: "submit" })).to.be.false;
@@ -47,7 +45,7 @@ describe("formGroup.vue", () => {
 			expect(form.fieldTypeHasLabel({ type: "input", inputType: "reset" })).to.be.false;
 		});
 
-		it("should default to true for unknown types", () => {
+		it("should default to true for unknown types", async () => {
 			expect(
 				form.fieldTypeHasLabel({
 					type: "input",

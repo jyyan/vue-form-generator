@@ -1,14 +1,14 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 
 import FieldStaticMap from "src/fields/optional/fieldStaticMap.vue";
 
-const localVue = createLocalVue();
+
 let wrapper;
 
 function createField2(data, methods) {
 	const _wrapper = mount(FieldStaticMap, {
-		localVue,
-		propsData: data,
+		
+		props: data,
 		methods: methods
 	});
 
@@ -44,12 +44,12 @@ describe("fieldStaticMap.vue", () => {
 		};
 		let input;
 
-		before(() => {
+		before(async () => {
 			createField2({ schema, model, disabled: false });
 			input = wrapper.find("img");
 		});
 
-		it("should contain an img element", () => {
+		it("should contain an img element", async () => {
 			expect(wrapper.exists()).to.be.true;
 			expect(input.is("img")).to.be.true;
 			expect(input.element.src).to.be.equal(
