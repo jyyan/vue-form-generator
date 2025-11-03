@@ -20,7 +20,8 @@ function attributesDirective(el, binding, vnode) {
 		attrs = objGet(attrs, container) || attrs;
 	}
 	forEach(attrs, (val, key) => {
-		el.setAttribute(key, val);
+		// Ensure val is converted to string to handle Proxy objects
+		el.setAttribute(key, val != null ? String(val) : "");
 	});
 }
 
@@ -67,6 +68,26 @@ export default {
 					this.updateModelValue(newValue, oldValue);
 				}
 			}
+		},
+		fieldClasses() {
+			// Ensure fieldClasses is properly converted for DOM use
+			// Vue's computed will unwrap Proxy, and spreading ensures it's a plain array/string
+			const classes = this.schema?.fieldClasses;
+			if (classes == null) return undefined;
+			if (isArray(classes)) return [...classes];
+			return classes;
+		},
+		// Helper to get primitive values for DOM attributes
+		// This ensures Proxy objects are converted to primitives when needed
+		safeSchemaValue() {
+			return (key, defaultValue = undefined) => {
+				const value = this.schema?.[key];
+				if (value === undefined || value === null) return defaultValue;
+				// If it's an object (including Proxy), convert to string
+				// This handles the case where frozen objects in shallowRef become Proxies
+				if (typeof value === "object") return String(value);
+				return value;
+			};
 		}
 	},
 
@@ -209,8 +230,9 @@ export default {
 		},
 
 		getFieldID(schema, unique = false) {
+			const schemaToUse = schema || this.schema;
 			const idPrefix = objGet(this.formOptions, "fieldIdPrefix", "");
-			return slugifyFormID(schema, idPrefix) + (unique ? "-" + uniqueId() : "");
+			return slugifyFormID(schemaToUse, idPrefix) + (unique ? "-" + uniqueId() : "");
 		},
 
 		getFieldClasses() {

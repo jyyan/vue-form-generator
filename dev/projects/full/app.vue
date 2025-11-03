@@ -35,6 +35,7 @@
 import VueFormGenerator from "../../../src";
 import DataTable from "./dataTable.vue";
 import Fakerator from "fakerator";
+import { reactive } from "vue";
 
 import Schema from "./schema";
 import { users } from "./data";
@@ -61,7 +62,8 @@ export default {
 
 			rows: users,
 
-			schema: Schema,
+			// Wrap schema in reactive Proxy to test Vue 3 Proxy compatibility
+			schema: reactive(Schema),
 
 			formOptions: {
 				validateAfterLoad: true,

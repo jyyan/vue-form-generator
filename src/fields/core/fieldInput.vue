@@ -6,7 +6,7 @@
 		:value="value",
 		@input="onInput",
 		@blur="onBlur",
-		:class="schema.fieldClasses",
+		:class="fieldClasses",
 		@change="schema.onChange || null",
 		:disabled="disabled",
 		:accept="schema.accept",
@@ -37,7 +37,7 @@
 		:width="schema.width",
 		:files="schema.files"
 		v-attributes="'input'")
-	span.helper(v-if="schema.inputType.toLowerCase() === 'color' || schema.inputType.toLowerCase() === 'range'") {{ value }}
+	span.helper(v-if="schema.inputType && (schema.inputType.toLowerCase() === 'color' || schema.inputType.toLowerCase() === 'range')") {{ value }}
 </template>
 
 <script>
