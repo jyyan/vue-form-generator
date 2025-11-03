@@ -44,6 +44,10 @@ export default {
 			} else {
 				result = item;
 			}
+			// Debug logging
+			if (result != null && typeof result === "object") {
+				console.log("[fieldRadiosboots.getItemValue] Detected object result:", result, "constructor:", result.constructor.name);
+			}
 			// Ensure result is a primitive value for DOM attributes
 			return (result != null && typeof result === "object") ? String(result) : result;
 		},
@@ -61,6 +65,10 @@ export default {
 				}
 			} else {
 				result = item;
+			}
+			// Debug logging
+			if (result != null && typeof result === "object") {
+				console.log("[fieldRadiosboots.getItemName] Detected object result:", result, "constructor:", result.constructor.name);
 			}
 			// Ensure result is a primitive value for display
 			return (result != null && typeof result === "object") ? String(result) : result;

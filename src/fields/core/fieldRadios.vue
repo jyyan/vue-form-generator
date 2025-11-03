@@ -19,6 +19,10 @@ export default {
 			if (typeof values == "function") {
 				return values.apply(this, [this.model, this.schema]);
 			} else {
+				// Debug logging
+				if (values && values.length > 0) {
+					console.log("[fieldRadios.items] schema.values:", values, "first item:", values[0], "constructor:", values[0]?.constructor.name);
+				}
 				return values;
 			}
 		},
@@ -43,6 +47,10 @@ export default {
 			} else {
 				result = item;
 			}
+			// Debug logging
+			if (result != null && typeof result === "object") {
+				console.log("[fieldRadios.getItemValue] Detected object result:", result, "constructor:", result.constructor.name);
+			}
 			// Ensure result is a primitive value for DOM attributes
 			return (result != null && typeof result === "object") ? String(result) : result;
 		},
@@ -60,6 +68,10 @@ export default {
 				}
 			} else {
 				result = item;
+			}
+			// Debug logging
+			if (result != null && typeof result === "object") {
+				console.log("[fieldRadios.getItemName] Detected object result:", result, "constructor:", result.constructor.name);
 			}
 			// Ensure result is a primitive value for display
 			return (result != null && typeof result === "object") ? String(result) : result;

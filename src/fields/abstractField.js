@@ -20,6 +20,10 @@ function attributesDirective(el, binding, vnode) {
 		attrs = objGet(attrs, container) || attrs;
 	}
 	forEach(attrs, (val, key) => {
+		// Debug logging to identify Proxy objects
+		if (val != null && typeof val === "object") {
+			console.log("[attributesDirective] Detected object for attribute:", key, "value:", val, "constructor:", val.constructor.name);
+		}
 		// Ensure val is converted to string to handle Proxy objects
 		el.setAttribute(key, val != null ? String(val) : "");
 	});
