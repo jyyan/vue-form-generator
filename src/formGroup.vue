@@ -140,9 +140,18 @@
 </template>
 <script>
 import { get as objGet, isNil, isFunction } from "lodash";
+import { toRaw } from "vue";
 import { slugifyFormID } from "./utils/schema";
 import formMixin from "./formMixin.js";
 import fieldComponents from "./utils/fieldsLoader.js";
+
+// Helper function to safely get raw value from potential Proxy
+function getRawValue(value) {
+	if (value != null && typeof value === "object") {
+		return toRaw(value);
+	}
+	return value;
+}
 
 export default {
 	name: "FormGroup",
@@ -176,17 +185,20 @@ export default {
 	methods: {
 		// Should field type have set as input first?
 		fieldTypeHasInputFirst(field) {
-			return !isNil(field.inputFirst);
+			const rawField = getRawValue(field);
+			return !isNil(getRawValue(rawField.inputFirst));
 		},
 		// Should field type have a label?
 		fieldTypeHasLabel(field) {
-			if (isNil(field.label)) return false;
+			const rawField = getRawValue(field);
+			if (isNil(getRawValue(rawField.label))) return false;
 
 			let relevantType = "";
-			if (field.type === "input") {
-				relevantType = field.inputType;
+			const fieldType = getRawValue(rawField.type);
+			if (fieldType === "input") {
+				relevantType = getRawValue(rawField.inputType);
 			} else {
-				relevantType = field.type;
+				relevantType = fieldType;
 			}
 
 			switch (relevantType) {
@@ -199,32 +211,41 @@ export default {
 			}
 		},
 		getFieldID(schema) {
+			const rawSchema = getRawValue(schema);
 			const idPrefix = objGet(this.options, "fieldIdPrefix", "");
-			return slugifyFormID(schema, idPrefix);
+			return slugifyFormID(rawSchema, idPrefix);
 		},
 		// Get type of field 'field-xxx'. It'll be the name of HTML element
 		getFieldType(fieldSchema) {
-			return "field-" + fieldSchema.type;
+			const rawSchema = getRawValue(fieldSchema);
+			return "field-" + getRawValue(rawSchema.type);
 		},
 		// Get type of button, default to 'button'
 		getButtonType(btn) {
-			return objGet(btn, "type", "button");
+			const rawBtn = getRawValue(btn);
+			return objGet(rawBtn, "type", "button");
 		},
 		// Child field executed validation
 		onFieldValidated(res, errors, field) {
 			this.$emit("validated", res, errors, field);
 		},
 		buttonVisibility(field) {
-			return field.buttons && field.buttons.length > 0;
+			const rawField = getRawValue(field);
+			const buttons = getRawValue(rawField.buttons);
+			return buttons && buttons.length > 0;
 		},
 		buttonClickHandler(btn, field, event) {
-			return btn.onclick.call(this, this.model, field, event, this);
+			const rawBtn = getRawValue(btn);
+			const rawField = getRawValue(field);
+			return rawBtn.onclick.call(this, this.model, rawField, event, this);
 		},
 		// Get current hint.
 		fieldHint(field) {
-			if (isFunction(field.hint)) return field.hint.call(this, this.model, field, this);
+			const rawField = getRawValue(field);
+			const hint = getRawValue(rawField.hint);
+			if (isFunction(hint)) return hint.call(this, this.model, rawField, this);
 
-			return field.hint;
+			return hint;
 		},
 		fieldErrors(field) {
 			return this.errors.filter((e) => e.field === field).map((item) => item.error);

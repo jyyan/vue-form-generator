@@ -1,44 +1,65 @@
 import { get as objGet, forEach, isNil, isArray, isString, isFunction } from "lodash";
+import { toRaw } from "vue";
+
+// Helper function to safely get raw value from potential Proxy
+function getRawValue(value) {
+	if (value != null && typeof value === "object") {
+		return toRaw(value);
+	}
+	return value;
+}
 
 export default {
 	methods: {
 		// Get style classes of field
 		getFieldRowClasses(field) {
-			const hasErrors = this.fieldErrors(field).length > 0;
+			const rawField = getRawValue(field);
+			const hasErrors = this.fieldErrors(rawField).length > 0;
 			let baseClasses = {
 				[objGet(this.options, "validationErrorClass", "error")]: hasErrors,
 				[objGet(this.options, "validationSuccessClass", "valid")]: !hasErrors,
-				disabled: this.fieldDisabled(field),
-				readonly: this.fieldReadonly(field),
-				featured: this.fieldFeatured(field),
-				required: this.fieldRequired(field)
+				disabled: this.fieldDisabled(rawField),
+				readonly: this.fieldReadonly(rawField),
+				featured: this.fieldFeatured(rawField),
+				required: this.fieldRequired(rawField)
 			};
 
-			if (isArray(field.styleClasses)) {
-				forEach(field.styleClasses, c => (baseClasses[c] = true));
-			} else if (isString(field.styleClasses)) {
-				baseClasses[field.styleClasses] = true;
+			const styleClasses = getRawValue(rawField.styleClasses);
+			if (isArray(styleClasses)) {
+				forEach(styleClasses, c => {
+					const rawC = getRawValue(c);
+					baseClasses[rawC] = true;
+				});
+			} else if (isString(styleClasses)) {
+				baseClasses[styleClasses] = true;
 			}
 
-			if (!isNil(field.type)) {
-				baseClasses["field-" + field.type] = true;
+			const fieldType = getRawValue(rawField.type);
+			if (!isNil(fieldType)) {
+				baseClasses["field-" + fieldType] = true;
 			}
 
 			return baseClasses;
 		},
 		getFieldWrapClasses(field) {
-			// const hasErrors = this.fieldErrors(field).length > 0;
+			const rawField = getRawValue(field);
+			// const hasErrors = this.fieldErrors(rawField).length > 0;
 			let baseClasses = {
 			};
 
-			if (isArray(field.fieldWarpClasses)) {
-				forEach(field.fieldWarpClasses, c => (baseClasses[c] = true));
-			} else if (isString(field.fieldWarpClasses)) {
-				baseClasses[field.fieldWarpClasses] = true;
+			const fieldWarpClasses = getRawValue(rawField.fieldWarpClasses);
+			if (isArray(fieldWarpClasses)) {
+				forEach(fieldWarpClasses, c => {
+					const rawC = getRawValue(c);
+					baseClasses[rawC] = true;
+				});
+			} else if (isString(fieldWarpClasses)) {
+				baseClasses[fieldWarpClasses] = true;
 			}
 
-			if (!isNil(field.type)) {
-				baseClasses["field-" + field.type] = true;
+			const fieldType = getRawValue(rawField.type);
+			if (!isNil(fieldType)) {
+				baseClasses["field-" + fieldType] = true;
 			}
 
 			return baseClasses;
@@ -49,35 +70,43 @@ export default {
 		},
 		// Get disabled attr of field
 		fieldDisabled(field) {
-			if (isFunction(field.disabled)) return field.disabled.call(this, this.model, field, this);
+			const rawField = getRawValue(field);
+			const disabled = getRawValue(rawField.disabled);
+			if (isFunction(disabled)) return disabled.call(this, this.model, rawField, this);
 
-			if (isNil(field.disabled)) return false;
+			if (isNil(disabled)) return false;
 
-			return field.disabled;
+			return disabled;
 		},
 		// Get readonly prop of field
 		fieldReadonly(field) {
-			if (isFunction(field.readonly)) return field.readonly.call(this, this.model, field, this);
+			const rawField = getRawValue(field);
+			const readonly = getRawValue(rawField.readonly);
+			if (isFunction(readonly)) return readonly.call(this, this.model, rawField, this);
 
-			if (isNil(field.readonly)) return false;
+			if (isNil(readonly)) return false;
 
-			return field.readonly;
+			return readonly;
 		},
 		// Get featured prop of field
 		fieldFeatured(field) {
-			if (isFunction(field.featured)) return field.featured.call(this, this.model, field, this);
+			const rawField = getRawValue(field);
+			const featured = getRawValue(rawField.featured);
+			if (isFunction(featured)) return featured.call(this, this.model, rawField, this);
 
-			if (isNil(field.featured)) return false;
+			if (isNil(featured)) return false;
 
-			return field.featured;
+			return featured;
 		},
 		// Get required prop of field
 		fieldRequired(field) {
-			if (isFunction(field.required)) return field.required.call(this, this.model, field, this);
+			const rawField = getRawValue(field);
+			const required = getRawValue(rawField.required);
+			if (isFunction(required)) return required.call(this, this.model, rawField, this);
 
-			if (isNil(field.required)) return false;
+			if (isNil(required)) return false;
 
-			return field.required;
+			return required;
 		}
 	}
 };
