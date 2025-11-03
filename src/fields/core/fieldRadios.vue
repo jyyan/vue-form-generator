@@ -33,7 +33,7 @@ export default {
 
 	methods: {
 		getChildFieldID(index) {
-			return this.getFieldID(this.schema, true) + "-" + index;
+			return this.fieldId + "-" + index;
 		},
 		getItemValue(item) {
 			let result;
