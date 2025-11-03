@@ -58,7 +58,7 @@ module.exports = {
 			}
 		],
 		hot: true,
-		port: 8080
+		port: 8085
 	},
 	entry: {
 		full: path.resolve("dev", "projects", "full", "main.js"),

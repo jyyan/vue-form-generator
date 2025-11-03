@@ -1,8 +1,9 @@
 <template lang="pug">
 	.radio-list(:disabled="disabled", v-attributes="'wrapper'")
-		label(v-for="item in items", :class="getItemCssClasses(item)", v-attributes="'label'")
-			input(:id="getFieldID(schema, true)", type="radio", :disabled="isItemDisabled(item)", :name="id", @click="onSelection(item)", :value="getItemValue(item)", :checked="isItemChecked(item)", :class="fieldClasses", :required="schema.required", v-attributes="'input'")
-			| {{ getItemName(item) }}
+		.form-check
+			label.form-check-label(v-for="item in items", :class="getItemCssClasses(item)", v-attributes="'label'")
+				input.form-check-input(:id="getFieldID(schema, true)", type="radio", :disabled="isItemDisabled(item)", :name="id", @click="onSelection(item)", :value="getItemValue(item)", :checked="isItemChecked(item)", :class="fieldClasses", :required="safeAttr('required')", v-attributes="'input'")
+				| {{ getItemName(item) }}
 
 </template>
 
@@ -28,6 +29,16 @@ export default {
 		},
 		id() {
 			return this.schema.model;
+		},
+		// Helper to safely extract primitive values from potentially Proxy-wrapped schema
+		safeAttr() {
+			return (key) => {
+				const val = this.schema?.[key];
+				if (val === undefined || val === null) return undefined;
+				// Convert objects to string to handle Proxy edge cases
+				if (typeof val === "object") return String(val);
+				return val;
+			};
 		}
 	},
 

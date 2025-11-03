@@ -81,9 +81,11 @@ export default {
 
 	computed: {
 		fields() {
+			console.log("[formGenerator.fields] Processing schema:", this.schema);
 			let res = [];
 			if (this.schema && this.schema.fields) {
 				forEach(this.schema.fields, field => {
+					console.log("[formGenerator.fields] Processing field:", field.model, "constructor:", field.constructor?.name);
 					if (!this.multiple || field.multi === true) res.push(field);
 				});
 			}
@@ -91,9 +93,16 @@ export default {
 			return res;
 		},
 		groups() {
+			console.log("[formGenerator.groups] Processing schema.groups:", this.schema?.groups);
 			let res = [];
 			if (this.schema && this.schema.groups) {
 				forEach(this.schema.groups.slice(0), group => {
+					console.log("[formGenerator.groups] Processing group, fields count:", group.fields?.length);
+					if (group.fields) {
+						group.fields.forEach((field, idx) => {
+							console.log(`[formGenerator.groups] Field ${idx}:`, field.model, "type:", field.type, "constructor:", field.constructor?.name);
+						});
+					}
 					res.push(group);
 				});
 			}

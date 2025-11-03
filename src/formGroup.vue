@@ -23,7 +23,7 @@
         <label
           v-if="fieldTypeHasLabel(field)"
           :for="getFieldID(field)"
-          :class="field.labelClasses"
+          :class="safeLabelClasses(field)"
         >
           <span v-html="field.label" />
           <span
@@ -74,7 +74,7 @@
       <label
         v-if="fieldTypeHasLabel(field)"
         :for="getFieldID(field)"
-        :class="field.labelClasses"
+        :class="safeLabelClasses(field)"
       >
         <span v-html="field.label" />
         <span
@@ -174,6 +174,15 @@ export default {
 	},
 	emits: ["validated", "model-updated"],
 	methods: {
+		// Safely extract label classes from potentially Proxy-wrapped field
+		safeLabelClasses(field) {
+			const classes = field.labelClasses;
+			if (classes === undefined || classes === null) return undefined;
+			// Spread arrays to ensure plain array, convert objects to string
+			if (Array.isArray(classes)) return [...classes];
+			if (typeof classes === "object") return String(classes);
+			return classes;
+		},
 		// Should field type have set as input first?
 		fieldTypeHasInputFirst(field) {
 			return !isNil(field.inputFirst);

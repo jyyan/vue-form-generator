@@ -9,33 +9,33 @@
 		:class="fieldClasses",
 		@change="schema.onChange || null",
 		:disabled="disabled",
-		:accept="schema.accept",
-		:alt="schema.alt",
-		:autocomplete="schema.autocomplete",
-		:checked="schema.checked",
-		:dirname="schema.dirname",
-		:formaction="schema.formaction",
-		:formenctype="schema.formenctype",
-		:formmethod="schema.formmethod",
-		:formnovalidate="schema.formnovalidate",
-		:formtarget="schema.formtarget",
-		:height="schema.height",
-		:list="schema.list",
-		:max="schema.max",
-		:maxlength="schema.maxlength",
-		:min="schema.min",
-		:minlength="schema.minlength",
-		:multiple="schema.multiple",
-		:name="schema.inputName",
-		:pattern="schema.pattern",
-		:placeholder="schema.placeholder",
-		:readonly="schema.readonly",
-		:required="schema.required",
-		:size="schema.size",
-		:src="schema.src",
-		:step="schema.step",
-		:width="schema.width",
-		:files="schema.files"
+		:accept="safeAttr('accept')",
+		:alt="safeAttr('alt')",
+		:autocomplete="safeAttr('autocomplete')",
+		:checked="safeAttr('checked')",
+		:dirname="safeAttr('dirname')",
+		:formaction="safeAttr('formaction')",
+		:formenctype="safeAttr('formenctype')",
+		:formmethod="safeAttr('formmethod')",
+		:formnovalidate="safeAttr('formnovalidate')",
+		:formtarget="safeAttr('formtarget')",
+		:height="safeAttr('height')",
+		:list="safeAttr('list')",
+		:max="safeAttr('max')",
+		:maxlength="safeAttr('maxlength')",
+		:min="safeAttr('min')",
+		:minlength="safeAttr('minlength')",
+		:multiple="safeAttr('multiple')",
+		:name="safeAttr('inputName')",
+		:pattern="safeAttr('pattern')",
+		:placeholder="safeAttr('placeholder')",
+		:readonly="safeAttr('readonly')",
+		:required="safeAttr('required')",
+		:size="safeAttr('size')",
+		:src="safeAttr('src')",
+		:step="safeAttr('step')",
+		:width="safeAttr('width')",
+		:files="safeAttr('files')"
 		v-attributes="'input'")
 	span.helper(v-if="schema.inputType && (schema.inputType.toLowerCase() === 'color' || schema.inputType.toLowerCase() === 'range')") {{ value }}
 </template>
@@ -61,6 +61,16 @@ export default {
 				return "datetime-local";
 			}
 			return this.schema.inputType;
+		},
+		// Helper to safely extract primitive values from potentially Proxy-wrapped schema
+		safeAttr() {
+			return (key) => {
+				const val = this.schema?.[key];
+				if (val === undefined || val === null) return undefined;
+				// Convert objects to string to handle Proxy edge cases
+				if (typeof val === "object") return String(val);
+				return val;
+			};
 		}
 	},
 
@@ -142,7 +152,8 @@ export default {
 			this.updateModelValue(newValue, oldValue);
 		},
 		formatDatetimeValueToField(value) {
-			if(value === null || undefined === value) {
+			// Return null for empty values (null, undefined, or empty string)
+			if(value === null || value === undefined || value === "") {
 				return null;
 			}
 
