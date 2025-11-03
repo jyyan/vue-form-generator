@@ -3,14 +3,14 @@
 	input.form-control(
 		:id="getFieldID(schema)",
 		type="file",
-		:name="schema.inputName",
+		:name="safeSchemaValue('inputName')",
 		@change="onChange",
-		:accept="schema.accept",
-		:multiple="schema.multiple",
-		:placeholder="schema.placeholder",
-		:readonly="schema.readonly",
-		:required="schema.required",
-		:disabled="disabled", 
+		:accept="safeSchemaValue('accept')",
+		:multiple="safeSchemaValue('multiple')",
+		:placeholder="safeSchemaValue('placeholder')",
+		:readonly="safeSchemaValue('readonly')",
+		:required="safeSchemaValue('required')",
+		:disabled="disabled",
 		v-attributes="'input'")
 </template>
 

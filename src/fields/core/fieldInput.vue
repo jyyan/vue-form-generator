@@ -9,33 +9,33 @@
 		:class="fieldClasses",
 		@change="schema.onChange || null",
 		:disabled="disabled",
-		:accept="safeAttr('accept')",
-		:alt="safeAttr('alt')",
-		:autocomplete="safeAttr('autocomplete')",
-		:checked="safeAttr('checked')",
-		:dirname="safeAttr('dirname')",
-		:formaction="safeAttr('formaction')",
-		:formenctype="safeAttr('formenctype')",
-		:formmethod="safeAttr('formmethod')",
-		:formnovalidate="safeAttr('formnovalidate')",
-		:formtarget="safeAttr('formtarget')",
-		:height="safeAttr('height')",
-		:list="safeAttr('list')",
-		:max="safeAttr('max')",
-		:maxlength="safeAttr('maxlength')",
-		:min="safeAttr('min')",
-		:minlength="safeAttr('minlength')",
-		:multiple="safeAttr('multiple')",
-		:name="safeAttr('inputName')",
-		:pattern="safeAttr('pattern')",
-		:placeholder="safeAttr('placeholder')",
-		:readonly="safeAttr('readonly')",
-		:required="safeAttr('required')",
-		:size="safeAttr('size')",
-		:src="safeAttr('src')",
-		:step="safeAttr('step')",
-		:width="safeAttr('width')",
-		:files="safeAttr('files')"
+		:accept="safeSchemaValue('accept')",
+		:alt="safeSchemaValue('alt')",
+		:autocomplete="safeSchemaValue('autocomplete')",
+		:checked="safeSchemaValue('checked')",
+		:dirname="safeSchemaValue('dirname')",
+		:formaction="safeSchemaValue('formaction')",
+		:formenctype="safeSchemaValue('formenctype')",
+		:formmethod="safeSchemaValue('formmethod')",
+		:formnovalidate="safeSchemaValue('formnovalidate')",
+		:formtarget="safeSchemaValue('formtarget')",
+		:height="safeSchemaValue('height')",
+		:list="safeSchemaValue('list')",
+		:max="safeSchemaValue('max')",
+		:maxlength="safeSchemaValue('maxlength')",
+		:min="safeSchemaValue('min')",
+		:minlength="safeSchemaValue('minlength')",
+		:multiple="safeSchemaValue('multiple')",
+		:name="safeSchemaValue('inputName')",
+		:pattern="safeSchemaValue('pattern')",
+		:placeholder="safeSchemaValue('placeholder')",
+		:readonly="safeSchemaValue('readonly')",
+		:required="safeSchemaValue('required')",
+		:size="safeSchemaValue('size')",
+		:src="safeSchemaValue('src')",
+		:step="safeSchemaValue('step')",
+		:width="safeSchemaValue('width')",
+		:files="safeSchemaValue('files')"
 		v-attributes="'input'")
 	span.helper(v-if="schema.inputType && (schema.inputType.toLowerCase() === 'color' || schema.inputType.toLowerCase() === 'range')") {{ value }}
 </template>
@@ -61,16 +61,6 @@ export default {
 				return "datetime-local";
 			}
 			return this.schema.inputType;
-		},
-		// Helper to safely extract primitive values from potentially Proxy-wrapped schema
-		safeAttr() {
-			return (key) => {
-				const val = this.schema?.[key];
-				if (val === undefined || val === null) return undefined;
-				// Convert objects to string to handle Proxy edge cases
-				if (typeof val === "object") return String(val);
-				return val;
-			};
 		}
 	},
 

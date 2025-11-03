@@ -4,13 +4,13 @@
 		:id="getFieldID(schema)",
 		:class="fieldClasses",
 		:disabled="disabled",
-		:maxlength="schema.max",
-		:minlength="schema.min",
-		:placeholder="schema.placeholder",
-		:readonly="schema.readonly",
-		:required="schema.required",
-		:rows="schema.rows || 2",
-		:name="schema.inputName",
+		:maxlength="safeSchemaValue('max')",
+		:minlength="safeSchemaValue('min')",
+		:placeholder="safeSchemaValue('placeholder')",
+		:readonly="safeSchemaValue('readonly')",
+		:required="safeSchemaValue('required')",
+		:rows="safeSchemaValue('rows', 2)",
+		:name="safeSchemaValue('inputName')",
 		v-attributes="'input'")
 </template>
 

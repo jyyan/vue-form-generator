@@ -1,9 +1,8 @@
 <template lang="pug">
 	.radio-list(:disabled="disabled", v-attributes="'wrapper'")
-		.form-check
-			label.form-check-label(v-for="item in items", :class="getItemCssClasses(item)", v-attributes="'label'")
-				input.form-check-input(:id="getFieldID(schema, true)", type="radio", :disabled="isItemDisabled(item)", :name="id", @click="onSelection(item)", :value="getItemValue(item)", :checked="isItemChecked(item)", :class="fieldClasses", :required="safeAttr('required')", v-attributes="'input'")
-				| {{ getItemName(item) }}
+		.form-check(v-for="(item, index) in items", :key="index")
+			input.form-check-input(:id="getChildFieldID(index)", type="radio", :disabled="isItemDisabled(item)", :name="id", @click="onSelection(item)", :value="getItemValue(item)", :checked="isItemChecked(item)", :class="fieldClasses", :required="safeSchemaValue('required')", v-attributes="'input'")
+			label.form-check-label(:for="getChildFieldID(index)", :class="getItemCssClasses(item)", v-attributes="'label'", @click="onSelection(item)") {{ getItemName(item) }}
 
 </template>
 
@@ -29,20 +28,13 @@ export default {
 		},
 		id() {
 			return this.schema.model;
-		},
-		// Helper to safely extract primitive values from potentially Proxy-wrapped schema
-		safeAttr() {
-			return (key) => {
-				const val = this.schema?.[key];
-				if (val === undefined || val === null) return undefined;
-				// Convert objects to string to handle Proxy edge cases
-				if (typeof val === "object") return String(val);
-				return val;
-			};
 		}
 	},
 
 	methods: {
+		getChildFieldID(index) {
+			return this.getFieldID(this.schema, true) + "-" + index;
+		},
 		getItemValue(item) {
 			let result;
 			if (isObject(item)) {
@@ -117,6 +109,8 @@ export default {
 <style lang="scss">
 .vue-form-generator .field-radios {
 	.radio-list {
+		width: 100% !important;
+		display: flex;
 		label {
 			display: block;
 			input[type="radio"] {

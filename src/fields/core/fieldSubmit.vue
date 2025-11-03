@@ -1,5 +1,5 @@
 <template lang="pug">
-	input(:id="getFieldID(schema)", type="submit", :value="schema.buttonText", @click="onClick", :name="schema.inputName", :disabled="disabled", :class="fieldClasses", v-attributes="'input'")
+	input(:id="getFieldID(schema)", type="submit", :value="safeSchemaValue('buttonText')", @click="onClick", :name="safeSchemaValue('inputName')", :disabled="disabled", :class="fieldClasses", v-attributes="'input'")
 </template>
 
 <script>
